@@ -35,3 +35,31 @@
     transform: rotate(360deg);
   }
 }
+
+.spoiler{
+  color: black;
+  background-color:black;
+  -webkit-touch-callout: none; /* iOS Safari */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+  .playerContainer {
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    justify-content: space-between;
+    text-align: left;
+    border: solid 0.3px #ccc;
+    padding: 1%;
+  }
+
+  h4 {
+    margin-top: 0;
+  }
+
+  .hidden {
+    display: none !important;
+  }
