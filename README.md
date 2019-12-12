@@ -20,12 +20,12 @@ Aim for the project was to work with the Wikipedia API to randomly select a Prem
  
 # Current State of Web App
 
--[x] Club history 
--[x] Appearances for each club 
--[x] Goals for each club 
--[ ] Empty input field for the user to submit their guess 
--[ ] The ability to handle a guess and show whether it was correct or not 
--[ ] After a game has been played, allow user to 'play again' and randomly generate another search 
+* -[x] Club history 
+* -[x] Appearances for each club 
+* -[x] Goals for each club 
+* -[ ] Empty input field for the user to submit their guess 
+* -[ ] The ability to handle a guess and show whether it was correct or not 
+* -[ ] After a game has been played, allow user to 'play again' and randomly generate another search 
 
 # Screenshots
 
@@ -41,11 +41,11 @@ Although I was able to procure the desired data, the API itself made it very dif
 
 # Lessons Learned
 
--[x] Regular Expressions, specifically on how to remove special characters from a string
--[x] String manipulation: .splice, .indexOf, .replace, .includes, .toString
--[x] Building React Functional Components
--[x] Managing states and passing states down to Child Components 
--[x] Mapping prop data in a Child Component
--[x] Never use the Wikipedia API again
+* -[x] Regular Expressions, specifically on how to remove special characters from a string
+* -[x] String manipulation: .splice, .indexOf, .replace, .includes, .toString
+* -[x] Building React Functional Components
+* -[x] Managing states and passing states down to Child Components 
+* -[x] Mapping prop data in a Child Component
+* -[x] Never use the Wikipedia API again
 
 
