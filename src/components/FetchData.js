@@ -4,22 +4,6 @@ import PlayerYears from './PlayerYears';
 import PlayerGoals from './PlayerGoals';
 import PlayerGames from './PlayerGames';
 
-
-
-/***** 
- https://en.wikipedia.org/w/api.php?action=parse&page=Alan%20Shearer&format=jsonfm&prop=wikitext&section=17
- This is the table of his entire career.
- 
- https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=Thierry%20Henry&format=jsonfm&prop=wikitext&section=0
- This brings the career table
-
-Object.keys(data.parse.wikitext)
-
-`https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=${a}%20${b}&format=json&prop=wikitext&section=0`
- = use for the fetchData, eventually
-
-*/
-
 class FetchData extends React.Component {
     constructor(props) {
         super(props);
@@ -47,71 +31,66 @@ class FetchData extends React.Component {
                 this.setState ({
                     playerPool: data,
                 })
-            // this.fetchData();
             this.updatePlayer(this.state.playerPool);
         })
         .catch(err => console.error(err)
         )
     }
 
-
     updatePlayer = (d) => {
-        let nameArray = [];
+        let playerFname;
+        let playerLname;
+        let nameIdArray = [];
         let split = d.toString().split('|');
         let i;
         for (i = 0; i < split.length; i++) {
             if (split[i].includes('sortname')) {
-                let playerFname = split[i + 1].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');;
-                let playerLname = split[i + 2].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');;
-                let fullName = playerFname + ' ' + playerLname;
-                nameArray.push(fullName)
-                d = nameArray;
+                nameIdArray.push(i);
             }
             else {
             }
         }
         console.log('outside of loop');
-        var randItem = d[Math.floor(Math.random()*d.length)];
-        console.log(randItem);
-        console.log(randItem.indexOf(' '))
-        this.fetchData(randItem);
+        let randId = nameIdArray[Math.floor(Math.random()*nameIdArray.length)];
+
+        playerFname = split[randId + 1].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');;
+        playerLname = split[randId + 2].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+       this.fetchData(playerFname, playerLname);
     }
 
-    fetchData = (randPlayer) => {
-        console.log('hello from fetchdata');
-        console.log(randPlayer);
-        randPlayer.split(" ");
-        console.log(randPlayer);
-        fetch(`https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=Alan%20Shearer&format=json&prop=wikitext&section=0`)
+    fetchData = (a, b) => {
+        let link = `https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=${a}%20${b}&format=json&prop=wikitext&section=0`;
+        fetch(link)
         .then(response => response.json())
         .then(data => {
-            this.setState ({
-                isLoaded: true,
-                playerName: data.parse.title,
-                playerData: data.parse.wikitext['*'],
-                playerClubs: [],
-                playerYears: [],
-                playerGoals: [],
-                playerGames: [],
-                })
-                console.log('in fetch data')       
-                // this.updatePlayer(this.state.playerPool);
+            console.log(link);
+            if (!data.parse.wikitext['*'].includes('clubs1')) {
+                this.fetchPlayerData();            
+                }
+            else {
+
+                this.setState ({
+                    isLoaded: true,
+                    playerName: data.parse.title,
+                    playerData: data.parse.wikitext['*'],
+                    playerClubs: [],
+                    playerYears: [],
+                    playerGoals: [],
+                    playerGames: [],
+                    })
+                }
             })
         .catch(err => console.error(err)
         )
     }
-
 
     render() {
         let { isLoaded, playerName, playerData, playerClubs, playerYears, playerGoals, playerGames } = this.state;
 
         let sliceStrStart = playerData.indexOf("years1 ");
         let sliceStrEnd = playerData.indexOf("totalcaps");
-
         this.state.playerClubs = playerData.slice(sliceStrStart, sliceStrEnd)
-
         let split = this.state.playerClubs.toString().split(' ');
-
         let clubsArray = [];
         let yearsArray = [];
         let goalsArray = [];
@@ -124,8 +103,11 @@ class FetchData extends React.Component {
                 i--;
             }
             else if (split[i].includes('clubs') & !split[i].includes('youth'))  {
-                let club = split[i + 2].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-                let clubTwo = split[i + 3].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                let club = split[i + 2].replace(/[^a-z^A-Z^0-9→\^]/gi, '');
+                let clubTwo = split[i + 3].replace(/[^a-z^A-Z^0-9→\^]/gi, '');
+                if(clubTwo.includes(club)) {
+                    clubTwo = clubTwo.slice(0, (clubTwo.length - club.length));
+                }
                 let finalClub = club + ' ' + clubTwo;
                 clubsArray.push(finalClub)
                 this.state.playerClubs = clubsArray;
@@ -150,9 +132,6 @@ class FetchData extends React.Component {
                 this.state.playerGames = gamesArray;
             }
         }
-
-   
-
         if (!isLoaded) {
             return (
                 <p>Loading...</p>
