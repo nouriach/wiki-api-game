@@ -3,6 +3,8 @@ import PlayerClubs from './PlayerClubs';
 import PlayerYears from './PlayerYears';
 import PlayerGoals from './PlayerGoals';
 import PlayerGames from './PlayerGames';
+import { tsExportAssignment } from '@babel/types';
+import { EBADMSG } from 'constants';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -13,6 +15,7 @@ class FetchData extends React.Component {
             playerClubs: [],
             playerYears: [],
             playerGames: [],
+            availableClubs: [],
             isLoaded: false,
         };
     }    
@@ -34,11 +37,68 @@ class FetchData extends React.Component {
         .catch(err => console.error(err)
         )
     }
+    
+    // A new API Call
+        /**
+          API brings in a list of every team to play in the Premier League.
+          This will be used to cross reference with the original API call to extract
+          every appearance of a club name. 
+        ***/
+    fetchClubList = () => {
+        fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20clubs&format=json&prop=wikitext&section=1')
+        .then (resp => resp.json())
+        .then (clubs => {
+                clubs = clubs.parse.wikitext['*'];
+                this.setState ({
+                    availableClubs: clubs,
+                })
+                this.buildClubs(this.state.availableClubs)
+            })
+        .catch(err => console.error(err)
+        )
+    }
+
+    buildClubs = (teams) => {
+        console.log('hello from build club');
+        // New API call turned into an array
+        let teamData = teams.toString().split('|');
+        let finalTeamsArray = []
+        let item;
+        for (item = 0; item < teamData.length; item++) {
+            if (teamData[item] == "") {
+                // remove gaps in the array
+                teamData.splice(item,1);
+            }
+            /****
+             If a value includes 'F.C.' && is below a certain character length (longest team name)
+             then it will be added to the finalTeamsArray.
+             ***/ 
+            else if (teamData[item].includes('F.C.') && (teamData[item].length < 33)) {
+                let teamName = teamData[item].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                finalTeamsArray.push(teamName);
+            }
+        }
+        this.storeClubs(finalTeamsArray)
+    }
+
+    storeClubs = (possibleTeams) => {
+        /*****
+        Clubs are now stored in an array without any gaps and with all special character removed
+        This function needs: 
+            to update the availableClubs state
+            maybe seelct a random player ID number and bring in all of it's data from each state
+            then identify the player and slice at a reasonable length away from the starting point
+            then extract each club that appears in the availableClubs array
+            then updated the state to then be displayed below in JSX
+         ****/
+        console.log('hello from possible teams');
+        console.log(possibleTeams);
+
+    };
 
     removeDataGaps = (d) => {
         let allData = d.toString().split('|');
         let playerNameArray = [];
-        let playerClubsArray = [];
         let playerYearsArray = [];
         let playerGamesArray = [];
 
@@ -48,7 +108,6 @@ class FetchData extends React.Component {
                 // remove empty spaces
                 allData.splice(i,1);
                 i--;
-
             }
             else if (allData[i].includes('flagicon')) {
                 // set player appearances
@@ -76,18 +135,8 @@ class FetchData extends React.Component {
             playerGames: playerGamesArray,
         })
 
-        this.buildClubs(allData);
+        this.fetchClubList();
     }
-
-
-    /**** NEXT STEP ****/
-    // How do I join the string together again like below and then extract just the clubs?
-
-    buildClubs = (e) => {
-        let joinData = e.join()
-        console.log(joinData);
-    }
-
 
     render() {
         let { isLoaded, playerName, playerData, playerClubs, playerYears, playerGoals, playerGames } = this.state;
@@ -105,7 +154,6 @@ class FetchData extends React.Component {
                         <p>Name: <span>{this.state.playerName}</span></p>
                         <PlayerClubs clubs={this.state.playerClubs}/>
                         <PlayerYears years={this.state.playerYears} />
-                        <PlayerGoals goals={this.state.playerGoals} />
                         <PlayerGames games={this.state.playerGames} />
                     </div>
                 </>
