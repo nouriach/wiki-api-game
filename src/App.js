@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h2>Who is the Premier League Footballer?</h2>
+        <h1 className="appHeader">Who is the Premier League Footballer?</h1>
       </header>
       <div class='game-container'>
         <FetchData />

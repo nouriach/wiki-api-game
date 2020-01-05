@@ -4,9 +4,9 @@ const PlayerName = props => {
 
     return (
         <>
-            <div>
-                <h2>Answer:</h2>
-                <p>{props.name}</p>
+            <div className="contentContainer">
+                <h3>Answer</h3>
+                <p className="result">{props.name}</p>
             </div>
         </>
     )

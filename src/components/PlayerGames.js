@@ -6,9 +6,9 @@ const PlayerGames = props => {
     // )
     return (
         <>
-        <div>
-            <p>Total Premier League Games:</p>
-            <h2>{props.games}</h2>
+        <div className="contentContainer">
+            <h3>Total Premier League Games</h3>
+            <p className="result">{props.games}</p>
         </div>
         </>
     )

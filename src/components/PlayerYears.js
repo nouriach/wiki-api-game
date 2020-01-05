@@ -6,9 +6,9 @@ const PlayerYears = props => {
     // )
     return (
         <>
-        <div>
-            <p>He played between:</p>
-            <h2>{props.years}</h2>
+        <div className="contentContainer">
+            <h3>He played between</h3>
+            <p className="result">{props.years}</p>
         </div>
         </>
     )

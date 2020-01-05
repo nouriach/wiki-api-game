@@ -1,52 +1,93 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
   background-color: #f7fafc;
   color: #00426e;
-  font-family: 'Trebuchet MS';
+  font: 300 14px/1.2 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  padding: 2rem;
+}
+
+h1, h2, h3 {
+  font-size: 1rem;
 }
 
 h3 {
-  font-weight: bolder;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+.App {
+  background: #fff;
+  box-shadow: 0 8px 12px #bfd6e6; 
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 320px;
+  padding: 0 2rem 2rem;
 }
 
 .App-header {
-  min-height: 10vh;
-  align-items: center;
-  padding: 2em 1em 0;
-  font-size: calc(15px + 2vmin);
+  background-color: #2171a7;
+  border-bottom: 1px solid #bfd6e6;
+  border-radius: 12px 12px 0 0;
+  color: #fff;
+  margin: 0 -2rem 2rem;
+  padding: 2rem;
+  text-align: center;
 }
 
-.game-container {
-  min-height: 80vh;
-  padding: 0 1em 2em;
+.appHeader {
+  font-size: 1.5rem;
 }
 
-.clubs-container {
-  padding: 0 1em;
+.contentContainer {
+  margin-bottom: 2rem;
 }
 
 .nameResults-container{
-  border: .2em solid;
-  box-shadow: 10px 11px 0px #2171a7;
-  margin: 1.5em;
+  background-color: #e5f0e9;
+  border: 1px solid #197c40;
+  color: #197c40;
+  margin-bottom: 1rem;
+  padding: 2rem 1rem 0;
+  text-align: center;
 }
 
-button {
+.result {
+  font-size: 1.25rem;
+}
+
+.button {
   background-color: transparent;
   border: 2px solid #00426e;
   border-radius: 2px;
   color: #00426e;
   cursor: pointer;
+  display: block;
   font: 700 14px/21px sans-serif;
   padding: 12px 24px;
   text-transform: uppercase;
   transition: ease all .3s;
+  width: 100%;
 }
 
-button:hover {
+.button:hover {
   box-shadow: 0 2px 2px #bfd6e6;
   transform: translateY(-1px);
 }
 
+.button:active, .button:focus {
+  background-color: #00426e;
+  border-radius: 2px;
+  color: #fff;  
+  outline: 4px solid #197c40;
+}
 
 

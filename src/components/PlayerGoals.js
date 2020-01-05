@@ -6,9 +6,9 @@ const PlayerGoals = props => {
     // )
     return (
         <>
-        <div>
-            <h3>Goals:</h3>
-            <p>{props.goals}</p>
+        <div className="contentContainer">
+            <h3>Goals</h3>
+            <p className="result">{props.goals}</p>
         </div>
         </>
     )

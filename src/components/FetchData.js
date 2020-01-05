@@ -222,7 +222,7 @@ class FetchData extends React.Component {
         
         if (!isLoaded) {
             return (
-                <p>Loading...</p>
+                <p className="result">Loading...</p>
             )
         }
         else {

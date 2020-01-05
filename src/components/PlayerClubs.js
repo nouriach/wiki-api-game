@@ -6,11 +6,13 @@ const PlayerClubs = props => {
     // )
     return (
         <>
-        <div>
-            <p>Previous Teams:</p>
-        </div>
-        <div className="clubs-container">
-            <h3>{props.clubs}</h3>
+        <div className="contentContainer">
+            <div>
+                <h3>Previous Teams</h3>
+            </div>
+            <div className="clubs-container">
+                <p className="result">{props.clubs}</p>
+            </div>
         </div>
         </>
     )
