@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import FetchData from './components/FetchData';
 
@@ -7,9 +6,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        Wiki Api Game
+        <h2>Who is the Premier League Footballer?</h2>
       </header>
-      <FetchData />
+      <div class='game-container'>
+        <FetchData />
+      </div>
     </div>
   );
 }
