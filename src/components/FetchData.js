@@ -148,7 +148,7 @@ class FetchData extends React.Component {
         let footballerOption = this.state.playerPool;
 
         let footballerNew = selectedFootballer.toString().split(' ');
-
+        console.log('this is the full string', footballerOption);
         let i;
         for (i = 0; i < footballerOption.length; i++) {
             if (footballerOption[i].includes(footballerNew[1])) {
@@ -159,7 +159,7 @@ class FetchData extends React.Component {
                 // console.log('string end', footballerOption[i+15]);
 
                 let sliceStart = footballerOption.indexOf(footballerOption[i]);
-                let sliceEnd = footballerOption.indexOf(footballerOption[i+15]);
+                let sliceEnd = sliceStart+15;
                 // IF THE BELOW CONSOLE.LOGS DON'T SHOW CORRECTLY THEN THE PLAYER'S CLUBS CAN'T BE CREATED
                 console.log('index slice start:', sliceStart);
                 console.log('index slice end', sliceEnd);
@@ -188,11 +188,12 @@ class FetchData extends React.Component {
                 }
             }
         }
-        console.log('loopClubs 4: this should be players clubs', randomPlayerClubs)
+        let playerclubStr = randomPlayerClubs.toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
+        console.log('loopClubs 4: this should be players clubs', playerclubStr)
         this.setState ({
-            randPlayerClubs: randomPlayerClubs,
+            randPlayerClubs: playerclubStr,
         })
-        this.setPlayer(playerId, randomPlayerClubs)
+        this.setPlayer(playerId, playerclubStr)
     }
 
     /******
