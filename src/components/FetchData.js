@@ -24,18 +24,25 @@ class FetchData extends React.Component {
             isLoaded: false,
         };
     }    
-    
-    componentDidMount = () => {
-        this.fetchPlayerData();
-    }
 
     fetchPlayerData = () => {
+        console.log('fetchPlayerData function');
         fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
         .then(response => response.json())
         .then(data => {
                 data = data.parse.wikitext['*'];
                 this.setState ({
                     playerPool: data,
+                    playerName: [],
+                    playerClubs: [],
+                    playerYears: [],
+                    playerGames: [],
+                    availableClubs: [],
+        
+                    randName: '',
+                    randPlayerClubs: [],
+                    randYears: [],
+                    randGames: '',
                 })
             this.removeDataGaps(this.state.playerPool);
         })
@@ -161,8 +168,8 @@ class FetchData extends React.Component {
                 let sliceStart = footballerOption.indexOf(footballerOption[i]);
                 let sliceEnd = sliceStart+15;
                 // IF THE BELOW CONSOLE.LOGS DON'T SHOW CORRECTLY THEN THE PLAYER'S CLUBS CAN'T BE CREATED
-                console.log('index slice start:', sliceStart);
-                console.log('index slice end', sliceEnd);
+                // console.log('index slice start:', sliceStart);
+                // console.log('index slice end', sliceEnd);
                 let newString = footballerOption.slice(sliceStart, sliceEnd);
                 this.loopClubs(newString, randId, randPlayer);
             }
@@ -172,9 +179,9 @@ class FetchData extends React.Component {
     }
 
     loopClubs = (playerStr, playerId, playerName) => {
-        console.log('loopClubs 1: this should be reduced string', playerStr);
-        console.log('loopClubs 2: this should be the ID', playerId);
-        console.log('loopClubs 3: this should be the player name', playerName);
+        // console.log('loopClubs 1: this should be reduced string', playerStr);
+        // console.log('loopClubs 2: this should be the ID', playerId);
+        // console.log('loopClubs 3: this should be the player name', playerName);
 
         let randomPlayerClubs = [];
         let playerTeams = this.state.availableClubs;
@@ -183,13 +190,12 @@ class FetchData extends React.Component {
         for (avClub=0; avClub < playerTeams.length; avClub++) {
             for (playerValue=0; playerValue < playerStr.length; playerValue++) {
                 if (playerStr[playerValue].includes(playerTeams[avClub])) {
-                    console.log('successful match', playerStr[playerValue]);
                     randomPlayerClubs.push(playerStr[playerValue]);
                 }
             }
         }
         let playerclubStr = randomPlayerClubs.toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
-        console.log('loopClubs 4: this should be players clubs', playerclubStr)
+        // console.log('loopClubs 4: this should be players clubs', playerclubStr)
         this.setState ({
             randPlayerClubs: playerclubStr,
         })
@@ -202,6 +208,7 @@ class FetchData extends React.Component {
      * where the number ISN'T value+15 for some reason)
      **/
     setPlayer = (id, clubs) => {
+        console.log('HELLO FROM SETPLAYER')
         // console.log('setPlayer 1 ID:', id)
         // console.log('setPlayer 2 clubs:', clubs)
         // console.log('setPlayer 3 name:', this.state.playerName[id]);
@@ -222,29 +229,26 @@ class FetchData extends React.Component {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames} = this.state;
         
         if (!isLoaded) {
-            return (
-                <p className="result">Loading...</p>
-            )
+            return <>
+                    <div>
+                        <p className="result">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                        <button className="button" onClick={this.fetchPlayerData}>Play</button>
+                    </div>
+                </>
         }
         else {
             return (
-                /*** 
-                 * CURRENTLY THE BELOW COMPONENTS ARE 'MAPPING' THROUGH THE STATES AS IF THERE IS
-                 * AN ARRAY. REMOVE THE MAPPING AND PASS THE OPTION DOWN AS A VALUE.
-                 * PERHAPS IN THE FUTURE EACH OF THE ABOVE 'CODE' CAN HAPPEN INSIDE THE COMPONENT, THEREFORE MAPPING 
-                 * WILL BE REQUIRED.
-                 ***/
                 <>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
-                    <div className="nameResults-container">
+                    <div>
                         <PlayerName name={randName}/>
                     </div>
                     <div className='play-container'>
-                        <PlayAgain />
+                        <PlayAgain sendFunction={this.fetchPlayerData}/>
                     </div>
                 </>
             )
