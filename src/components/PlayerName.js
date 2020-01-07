@@ -5,7 +5,6 @@ class PlayerName extends React.Component {
         super(props);
         this.state = {
             guess: '',
-            playerName: props.name,
             showAnswer: false,
     };
         this.handleChange = this.handleChange.bind(this);
@@ -22,10 +21,11 @@ class PlayerName extends React.Component {
 
     handleSubmit = (e) => {
         console.log('hello from handleSubmit')
+        console.log('player name from parent', this.props.playerName)
         e.preventDefault();
         console.log(this.state)
         let playerGuess = this.state.guess;
-        let answer = this.state.playerName;
+        let answer = this.props.playerName;
         console.log(playerGuess);
         console.log(answer) ;
         if (playerGuess === answer) {
@@ -70,7 +70,7 @@ class PlayerName extends React.Component {
                 </div>
                 <div className="contentContainer nameResults-container">
                     <h3>Answer</h3>
-                    <p className="result">{this.state.playerName}</p>
+                    <p className="result">{this.props.playerName}</p>
                 </div>
             </>
             )
