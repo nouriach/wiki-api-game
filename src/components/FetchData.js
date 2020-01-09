@@ -5,6 +5,7 @@ import PlayerGames from './PlayerGames';
 import PlayerName from './PlayerName';
 import PlayAgain from './PlayAgain';
 import PlayerAnswer from './PlayerAnswer';
+import GiveUp from './GiveUp';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class FetchData extends React.Component {
 
             isLoaded: false,
         };
-    }    
+    }
 
     fetchPlayerData = () => {
 
@@ -42,7 +43,7 @@ class FetchData extends React.Component {
                     playerYears: [],
                     playerGames: [],
                     availableClubs: [],
-        
+
                     randName: '',
                     randPlayerClubs: [],
                     randYears: [],
@@ -84,11 +85,11 @@ class FetchData extends React.Component {
         }
         //remove bad data at the start
         playerYearsArray.shift();
-        /**** 
+        /****
           Below each state array has the same amount of values in it, therefore
           number '30' will always represent the same player's information.
           PlayerClubs is still incomplete.
-         ****/ 
+         ****/
 
         this.setState ({
             playerPool: playerPoolData,
@@ -108,12 +109,18 @@ class FetchData extends React.Component {
                 clubs = clubs.parse.wikitext['*'];
                 this.setState ({
                     availableClubs: clubs,
-                    gameState: false,
                 })
                 this.cleanClubs(this.state.availableClubs)
             })
         .catch(err => console.error(err)
         )
+    }
+
+    resetGame = () => {
+      this.setState({
+        gameState: false,
+      })
+      this.fetchClubList();
     }
 
     cleanClubs = (teams) => {
@@ -129,13 +136,13 @@ class FetchData extends React.Component {
             /****
              If a value includes 'F.C.' && is below a certain character length (longest team name)
              then it will be added to the finalTeamsArray.
-             ***/ 
+             ***/
             else if (teamData[value].includes('F.C.') && (teamData[value].length < 33)) {
                 let teamName = teamData[value].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
                 finalTeamsArray.push(teamName);
             }
         }
-        //remove the incorrect team at the end 
+        //remove the incorrect team at the end
         finalTeamsArray.pop();
         this.setState ({
             availableClubs: finalTeamsArray,
@@ -175,6 +182,20 @@ class FetchData extends React.Component {
         }
     }
 
+    removeCharacters = (array) => {
+      //loop through the array and remove the special characters and FC / AFC from each entry
+      //Remove whitespace at front or back of string in each array entry
+
+      let i
+      for (i = 0; i < array.length; i++) {
+        array[i] = array[i].toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
+        array[i] = array[i].toString().replace(/ F.C./g, '');
+        array[i] = array[i].toString().replace(/A.F.C./g, '');
+        array[i] = array[i].toString().replace(/^\s/, '');
+        array[i] = array[i].toString().replace(/$\s/, '');
+      }
+    }
+
     loopClubs = (playerStr, playerId, playerName) => {
         // console.log('loopClubs 1: this should be reduced string', playerStr);
         // console.log('loopClubs 2: this should be the ID', playerId);
@@ -182,21 +203,45 @@ class FetchData extends React.Component {
 
         let randomPlayerClubs = [];
         let playerTeams = this.state.availableClubs;
+        let playerTeamsStr = playerTeams.toString()
         let avClub;
         let playerValue;
-        for (avClub=0; avClub < playerTeams.length; avClub++) {
-            for (playerValue=0; playerValue < playerStr.length; playerValue++) {
-                if (playerStr[playerValue].includes(playerTeams[avClub])) {
-                    randomPlayerClubs.push(playerStr[playerValue]);
-                }
+        let i;
+        //put the player string into an array that can be manipulated
+        let playerStrSort = playerStr.toString().split(",")
+
+        //remove unwanted characters from playerStrSort array
+        this.removeCharacters(playerStrSort)
+
+        for (playerValue=0; playerValue < playerStrSort.length; playerValue++) {
+            if (playerTeamsStr.includes(playerStrSort[playerValue])) {
+                randomPlayerClubs.push(playerStrSort[playerValue]);
             }
         }
-        let playerclubStr = randomPlayerClubs.toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
+        //Make randomPlayerClubs an array that can be manipulated
+        let playerClubList = randomPlayerClubs.toString().split(',')
+
+        //Remove unwanted characters from playerClubList array
+        this.removeCharacters(playerClubList)
+
+        //Check if there are any arrays in the club list, create a new array that doesn't contain any duplicates
+        let x;
+        let playerClubsArray = [];
+        for (x=0; x < playerClubList.length; x++) {
+          if (!playerClubsArray.includes(playerClubList[x])) {
+            playerClubsArray.push(playerClubList[x])
+          }
+          else {
+            console.log('duplicate', x, playerClubList[x]);
+          }
+
+        }
+
         // console.log('loopClubs 4: this should be players clubs', playerclubStr)
         this.setState ({
-            randPlayerClubs: playerclubStr,
+            randPlayerClubs: playerClubsArray,
         })
-        this.setPlayer(playerId, playerclubStr)
+        this.setPlayer(playerId, playerClubsArray)
     }
 
     /******
@@ -217,7 +262,7 @@ class FetchData extends React.Component {
             randYears: this.state.playerYears[id],
             randGames: this.state.playerGames[id],
             isLoaded: true,
-        
+
         })
         console.log(this.state)
     }
@@ -260,6 +305,9 @@ class FetchData extends React.Component {
                     <div className='play-container'>
                         <PlayAgain sendFunction={this.fetchPlayerData}/>
                     </div>
+                    <div className="play-container">
+                        <GiveUp sendFunction={this.setGameState} />
+                    </div>
                 </>
             )
         }
@@ -272,14 +320,11 @@ class FetchData extends React.Component {
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
-                    <div className="submit-container">
-                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
-                    </div>
                     <div className="contentContainer nameResults-container">
                         <PlayerAnswer playerName={randName} />
                     </div>
                     <div className='play-container'>
-                        <PlayAgain sendFunction={this.fetchPlayerData}/>
+                        <PlayAgain sendFunction={this.resetGame} />
                     </div>
                 </>
             )
