@@ -12,6 +12,11 @@ body {
   padding: 2rem;
 }
 
+.loading-container {
+    padding: 1rem;
+    text-align: center;
+}
+
 h1, h2, h3 {
   font-size: 1rem;
 }
@@ -90,4 +95,44 @@ p {
   outline: 4px solid #197c40;
 }
 
+.submit-container {
+  display: flex;
+  margin: 1em;
+  justify-content: center;
+}
 
+form {
+    display: flex;
+    flex-direction: row;
+}
+
+form > input{
+  margin: .5rem;
+  padding: .5rem;
+}
+
+form > button {
+  background-color: transparent;
+  border: 2px solid #00426e;
+  border-radius: 2px;
+  color: #00426e;
+  cursor: pointer;
+  display: block;
+  font: 700 14px/21px sans-serif;
+  padding: 6px 10px;
+  text-transform: uppercase;
+  transition: ease all .3s;
+  width: 100%;
+}
+
+ form > button:hover {
+  box-shadow: 0 2px 2px #bfd6e6;
+  transform: translateY(-1px);
+}
+
+form > button:active, .button:focus {
+  background-color: #00426e;
+  border-radius: 2px;
+  color: #fff;  
+  outline: 4px solid #197c40;
+}
