@@ -3,7 +3,8 @@ import PlayerClubs from './PlayerClubs';
 import PlayerYears from './PlayerYears';
 import PlayerGames from './PlayerGames';
 import PlayerName from './PlayerName';
-import PlayAgain from './PlayAgain'
+import PlayAgain from './PlayAgain';
+import PlayerAnswer from './PlayerAnswer';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -100,12 +101,14 @@ class FetchData extends React.Component {
     }
 
     fetchClubList = () => {
+
         fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20clubs&format=json&prop=wikitext&section=1')
         .then (resp => resp.json())
         .then (clubs => {
                 clubs = clubs.parse.wikitext['*'];
                 this.setState ({
                     availableClubs: clubs,
+                    gameState: false,
                 })
                 this.cleanClubs(this.state.availableClubs)
             })
@@ -219,18 +222,31 @@ class FetchData extends React.Component {
         console.log(this.state)
     }
 
+    setGameState = () => {
+        console.log('Game State', this.state.gameState);
+        this.setState ({
+            gameState: true,
+        })
+        console.log('Game State Update', this.state.gameState);
+
+    }
+
     render() {
-        let { isLoaded, randName, randPlayerClubs, randYears, randGames} = this.state;
+        let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState} = this.state;
         //
         if (!isLoaded) {
             return <>
                     <div>
                         <p className="result">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                    </div>
+                    <div>
                         <button className="button" onClick={this.fetchPlayerData}>Play</button>
                     </div>
+
                 </>
         }
-        else {
+
+        else if (isLoaded && !gameState) {
             return (
                 <>
                     <div id="Results">
@@ -239,7 +255,28 @@ class FetchData extends React.Component {
                         <PlayerGames games={randGames} />
                     </div>
                     <div>
-                        <PlayerName playerName={randName} gameState={this.state.gameState} />
+                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
+                    </div>
+                    <div className='play-container'>
+                        <PlayAgain sendFunction={this.fetchPlayerData}/>
+                    </div>
+                </>
+            )
+        }
+
+        else if (gameState) {
+            return (
+                <>
+                    <div id="Results">
+                        <PlayerClubs clubs={randPlayerClubs}/>
+                        <PlayerYears years={randYears} />
+                        <PlayerGames games={randGames} />
+                    </div>
+                    <div>
+                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
+                    </div>
+                    <div className="contentContainer nameResults-container">
+                        <PlayerAnswer playerName={randName} />
                     </div>
                     <div className='play-container'>
                         <PlayAgain sendFunction={this.fetchPlayerData}/>
