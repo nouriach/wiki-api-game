@@ -236,8 +236,8 @@ class FetchData extends React.Component {
         //
         if (!isLoaded) {
             return <>
-                    <div>
-                        <p className="result">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                    <div className="loading-container">
+                        <h1>Can you guess the player from the years they played, the appearances they made and the Premier League clubs they played for?</h1>
                     </div>
                     <div>
                         <button className="button" onClick={this.fetchPlayerData}>Play</button>
@@ -254,7 +254,7 @@ class FetchData extends React.Component {
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
-                    <div>
+                    <div className="submit-container">
                         <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
                     </div>
                     <div className='play-container'>
@@ -272,7 +272,7 @@ class FetchData extends React.Component {
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
-                    <div>
+                    <div className="submit-container">
                         <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
                     </div>
                     <div className="contentContainer nameResults-container">
