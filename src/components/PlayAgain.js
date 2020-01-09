@@ -1,11 +1,14 @@
 import React from 'react';
 
-const PlayAgain = () => {
-    return (
-        <>
-            <button className="button">Play</button>
-        </>
-    )
+class PlayAgain extends React.Component {
+    render () {
+        return (
+            <>
+                <button className="button" onClick={this.props.sendFunction}>Play Again</button>
+            </>
+        );
+    }
 }
+
 
 export default PlayAgain;

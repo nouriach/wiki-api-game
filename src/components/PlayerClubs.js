@@ -8,7 +8,7 @@ const PlayerClubs = props => {
         <>
         <div className="contentContainer">
             <div>
-                <h3>Previous Teams</h3>
+                <h3>Previous Premier League Teams</h3>
             </div>
             <div className="clubs-container">
                 <p className="result">{props.clubs}</p>

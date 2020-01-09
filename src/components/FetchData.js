@@ -21,11 +21,14 @@ class FetchData extends React.Component {
             randYears: [],
             randGames: '',
 
+            gameState: false,
+
             isLoaded: false,
         };
     }    
 
     fetchPlayerData = () => {
+
         console.log('fetchPlayerData function');
         fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
         .then(response => response.json())
@@ -138,15 +141,6 @@ class FetchData extends React.Component {
     }
 
     storeClubs = () => {
-        /*****
-        Clubs are now stored in an array without any gaps and with all special characters removed
-        This function needs: 
-            to update the availableClubs state
-            maybe seelct a random player ID number and bring in all of it's data from each state
-            then identify the player and slice at a reasonable length away from the starting point
-            then extract each club that appears in the availableClubs array
-            then updated the state to then be displayed below in JSX
-         ****/
         //select a random player
         let randPlayer = this.state.playerName[Math.floor(Math.random()*this.state.playerName.length)];
         //find out what position in the array this player's ID is
@@ -155,7 +149,7 @@ class FetchData extends React.Component {
         let footballerOption = this.state.playerPool;
 
         let footballerNew = selectedFootballer.toString().split(' ');
-        console.log('this is the full string', footballerOption);
+        // console.log('this is the full string', footballerOption);
         let i;
         for (i = 0; i < footballerOption.length; i++) {
             if (footballerOption[i].includes(footballerNew[1])) {
@@ -227,7 +221,7 @@ class FetchData extends React.Component {
 
     render() {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames} = this.state;
-        
+        //
         if (!isLoaded) {
             return <>
                     <div>
@@ -245,7 +239,7 @@ class FetchData extends React.Component {
                         <PlayerGames games={randGames} />
                     </div>
                     <div>
-                        <PlayerName name={randName}/>
+                        <PlayerName playerName={randName} gameState={this.state.gameState} />
                     </div>
                     <div className='play-container'>
                         <PlayAgain sendFunction={this.fetchPlayerData}/>

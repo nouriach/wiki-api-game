@@ -34,7 +34,6 @@ class PlayerName extends React.Component {
                 guess: '',
                 showAnswer: true,
             })
-            console.log('passed name', this.state)
         }
         else {
             console.log('your answer is wrong');
@@ -42,8 +41,14 @@ class PlayerName extends React.Component {
                 guess: '',
             })
         }
-
     }
+
+    // NEXT STEP
+
+    /*****
+     Once the player selects 'play again', how can the div below switch to the original display?
+     
+     ****/
 
     render () {
         let { showAnswer } = this.state;
