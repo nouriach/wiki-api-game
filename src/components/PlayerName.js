@@ -5,10 +5,10 @@ class PlayerName extends React.Component {
         super(props);
         this.state = {
             guess: '',
-            showAnswer: false,
     };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
+
     }
 
     handleChange = (e) => {
@@ -32,17 +32,18 @@ class PlayerName extends React.Component {
             console.log('correct answer');
             this.setState({
                 guess: '',
-                showAnswer: true,
             })
+            this.props.setGameState();
         }
         else {
             console.log('your answer is wrong');
             this.setState({
                 guess: '',
             })
-        }
+        }    
     }
 
+    
     // NEXT STEP
 
     /*****
@@ -51,20 +52,6 @@ class PlayerName extends React.Component {
      ****/
 
     render () {
-        let { showAnswer } = this.state;
-
-        if (!showAnswer) {
-
-            return( 
-            <div>
-                <form>
-                    <input type="text" placeholder="Who is it?" name="guess" value={this.state.guess} onChange={this.handleChange} />
-                    <button type="submit" onClick={this.handleSubmit}>Submit</button>
-                </form>                 
-            </div>
-            )
-        }
-        else {
             return (
             <>
                 <div>
@@ -73,14 +60,9 @@ class PlayerName extends React.Component {
                         <button type="submit" onClick={this.handleSubmit}>Submit</button>
                     </form>                 
                 </div>
-                <div className="contentContainer nameResults-container">
-                    <h3>Answer</h3>
-                    <p className="result">{this.props.playerName}</p>
-                </div>
             </>
             )
         }
     }
-}
 
 export default PlayerName;
