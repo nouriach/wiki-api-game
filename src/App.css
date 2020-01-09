@@ -1,38 +1,138 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f7fafc;
+  color: #00426e;
+  font: 300 14px/1.2 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  padding: 2rem;
+}
+
+.loading-container {
+    padding: 1rem;
+    text-align: center;
+}
+
+h1, h2, h3 {
+  font-size: 1rem;
+}
+
+h3 {
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  background: #fff;
+  box-shadow: 0 8px 12px #bfd6e6; 
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 320px;
+  padding: 0 2rem 2rem;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #2171a7;
+  border-bottom: 1px solid #bfd6e6;
+  border-radius: 12px 12px 0 0;
+  color: #fff;
+  margin: 0 -2rem 2rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.appHeader {
+  font-size: 1.5rem;
+}
+
+.contentContainer {
+  margin-bottom: 2rem;
+}
+
+.nameResults-container{
+  background-color: #e5f0e9;
+  border: 1px solid #197c40;
+  color: #197c40;
+  margin-bottom: 1rem;
+  padding: 2rem 1rem 0;
+  text-align: center;
+}
+
+.result {
+  font-size: 1.25rem;
+}
+
+.button {
+  background-color: transparent;
+  border: 2px solid #00426e;
+  border-radius: 2px;
+  color: #00426e;
+  cursor: pointer;
+  display: block;
+  font: 700 14px/21px sans-serif;
+  padding: 12px 24px;
+  text-transform: uppercase;
+  transition: ease all .3s;
+  width: 100%;
+}
+
+.button:hover {
+  box-shadow: 0 2px 2px #bfd6e6;
+  transform: translateY(-1px);
+}
+
+.button:active, .button:focus {
+  background-color: #00426e;
+  border-radius: 2px;
+  color: #fff;  
+  outline: 4px solid #197c40;
+}
+
+.submit-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin: 1em;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+form {
+    display: flex;
+    flex-direction: row;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+form > input{
+  margin: .5rem;
+  padding: .5rem;
+}
+
+form > button {
+  background-color: transparent;
+  border: 2px solid #00426e;
+  border-radius: 2px;
+  color: #00426e;
+  cursor: pointer;
+  display: block;
+  font: 700 14px/21px sans-serif;
+  padding: 6px 10px;
+  text-transform: uppercase;
+  transition: ease all .3s;
+  width: 100%;
+}
+
+ form > button:hover {
+  box-shadow: 0 2px 2px #bfd6e6;
+  transform: translateY(-1px);
+}
+
+form > button:active, .button:focus {
+  background-color: #00426e;
+  border-radius: 2px;
+  color: #fff;  
+  outline: 4px solid #197c40;
 }

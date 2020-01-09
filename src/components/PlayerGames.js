@@ -1,17 +1,14 @@
 import React from 'react';
 
-// how can the Id be included in the className?
 const PlayerGames = props => {
-    const listItems = props.games.map((games, id) =>
-        <p key={id} className="games">{games}</p>
-    )
+    // const listItems = props.games.map((games, id) =>
+    //     <p key={id} className="games">{games}</p>
+    // )
     return (
         <>
-        <div>
-            <h3>Appearances:</h3>
-        </div>
-        <div>
-            {listItems}
+        <div className="contentContainer">
+            <h3>Total Premier League Games</h3>
+            <p className="result">{props.games}</p>
         </div>
         </>
     )
