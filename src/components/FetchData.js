@@ -310,9 +310,6 @@ class FetchData extends React.Component {
                     <div className="submit-container">
                         <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
                     </div>
-                    <div className='play-container'>
-                        <PlayAgain sendFunction={this.fetchPlayerData}/>
-                    </div>
                     <div className="play-container">
                         <GiveUp sendFunction={this.setGameState} />
                     </div>
