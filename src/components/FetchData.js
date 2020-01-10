@@ -190,25 +190,36 @@ class FetchData extends React.Component {
       for (i = 0; i < array.length; i++) {
         array[i] = array[i].toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
         array[i] = array[i].toString().replace(/ F.C./g, '');
+        array[i] = array[i].toString().replace(/ F.C/g, '');
         array[i] = array[i].toString().replace(/A.F.C./g, '');
         array[i] = array[i].toString().replace(/^\s/, '');
         array[i] = array[i].toString().replace(/$\s/, '');
+
+        if (array[i].toString().slice(-1) === ' ') {
+            console.log( array[i], 'there IS A space')
+            array[i] = array[i].toString().replace(/.$/,'');
+            console.log( array[i], 'there IS A space 2')
+
+        }
+
+        else {
+            console.log( array[i], 'there is no space');
+        }
+        //
       }
     }
 
     loopClubs = (playerStr, playerId, playerName) => {
-        // console.log('loopClubs 1: this should be reduced string', playerStr);
-        // console.log('loopClubs 2: this should be the ID', playerId);
-        // console.log('loopClubs 3: this should be the player name', playerName);
 
+        let playerNameToStr = this.state.playerName.toString()
+        console.log('recent string made', playerNameToStr);
         let randomPlayerClubs = [];
         let playerTeams = this.state.availableClubs;
         let playerTeamsStr = playerTeams.toString()
-        let avClub;
         let playerValue;
-        let i;
         //put the player string into an array that can be manipulated
         let playerStrSort = playerStr.toString().split(",")
+        console.log(playerStrSort);
 
         //remove unwanted characters from playerStrSort array
         this.removeCharacters(playerStrSort)
@@ -228,13 +239,12 @@ class FetchData extends React.Component {
         let x;
         let playerClubsArray = [];
         for (x=0; x < playerClubList.length; x++) {
-          if (!playerClubsArray.includes(playerClubList[x])) {
+          if (!playerClubsArray.includes(playerClubList[x]) && !playerNameToStr.includes(playerClubList[x])) {
             playerClubsArray.push(playerClubList[x])
           }
           else {
             console.log('duplicate', x, playerClubList[x]);
           }
-
         }
 
         // console.log('loopClubs 4: this should be players clubs', playerclubStr)
