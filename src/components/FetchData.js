@@ -153,21 +153,18 @@ class FetchData extends React.Component {
     storeClubs = () => {
         //select a random player
         let randPlayer = this.state.playerName[Math.floor(Math.random()*this.state.playerName.length)];
+        console.log('random player 1:', randPlayer);
         //find out what position in the array this player's ID is
         let randId = this.state.playerName.indexOf(randPlayer)
-        let selectedFootballer = this.state.playerName[randId];
-        let footballerOption = this.state.playerPool;
 
-        let footballerNew = selectedFootballer.toString().split(' ');
+        let footballerOption = this.state.playerPool;
+        console.log('footballer option', footballerOption);
+        let footballerNew = randPlayer.toString().split(' ');
         // console.log('this is the full string', footballerOption);
         let i;
         for (i = 0; i < footballerOption.length; i++) {
-            if (footballerOption[i].includes(footballerNew[1])) {
-                // console.log('random player', randPlayer);
-                // console.log('random id', randId);
-                // console.log('second name of random player', footballerNew[1]);
-                // console.log('string start', (footballerOption[i]));
-                // console.log('string end', footballerOption[i+15]);
+            if (footballerOption[i].includes(footballerNew[1]) && (footballerOption[i-1].includes(footballerNew[0]) || footballerOption[i-2].includes(footballerNew[0]))) {
+                console.log('player ID in data pool', i);
 
                 let sliceStart = footballerOption.indexOf(footballerOption[i]);
                 let sliceEnd = sliceStart+15;
@@ -178,6 +175,7 @@ class FetchData extends React.Component {
                 this.loopClubs(newString, randId, randPlayer);
             }
             else {
+                console.log('lost player');
             }
         }
     }
