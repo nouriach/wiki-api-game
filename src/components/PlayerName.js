@@ -35,6 +35,7 @@ class PlayerName extends React.Component {
                 guess: '',
             })
             this.props.setGameState();
+            this.props.updateScore('correct');
         }
         else {
             console.log('your answer is wrong');

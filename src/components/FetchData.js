@@ -6,6 +6,7 @@ import PlayerName from './PlayerName';
 import PlayAgain from './PlayAgain';
 import PlayerAnswer from './PlayerAnswer';
 import GiveUp from './GiveUp';
+import Score from './Score';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -23,7 +24,11 @@ class FetchData extends React.Component {
             randYears: [],
             randGames: '',
 
-            gameState: false,
+            won: false,
+
+            score: 0,
+
+            gameState: 'progress',
 
             isLoaded: false,
         };
@@ -48,6 +53,9 @@ class FetchData extends React.Component {
                     randPlayerClubs: [],
                     randYears: [],
                     randGames: '',
+
+                    gameState: 'progress',
+                    score: 0,
                 })
             this.removeDataGaps(this.state.playerPool);
         })
@@ -118,7 +126,7 @@ class FetchData extends React.Component {
 
     resetGame = () => {
       this.setState({
-        gameState: false,
+        gameState: 'progress',
       })
       this.fetchClubList();
     }
@@ -278,14 +286,31 @@ class FetchData extends React.Component {
     setGameState = () => {
         console.log('Game State', this.state.gameState);
         this.setState ({
-            gameState: true,
+            gameState: 'correct',
         })
         console.log('Game State Update', this.state.gameState);
+    }
+
+    updateScore = (answer) => {
+      if (answer === "correct") {
+        this.setState({
+          score: this.state.score + 1,
+        })
+        //if score is 5 or over 5 (to have a backup) then set the game to won.
+            if (this.state.score >= 4) {
+              this.setState({
+                won: true,
+                gameState: 'complete',
+              })
+            }
+      }
 
     }
 
+
+
     render() {
-        let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState} = this.state;
+        let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
         //
         if (!isLoaded) {
             return <>
@@ -299,16 +324,19 @@ class FetchData extends React.Component {
                 </>
         }
 
-        else if (isLoaded && !gameState) {
+        else if (isLoaded && (gameState === "progress")) {
             return (
                 <>
+                    <div>
+                      <Score score={this.state.score}/>
+                    </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
                     <div className="submit-container">
-                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
+                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore}/>
                     </div>
                     <div className="play-container">
                         <GiveUp sendFunction={this.setGameState} />
@@ -317,9 +345,12 @@ class FetchData extends React.Component {
             )
         }
 
-        else if (gameState) {
+        else if (gameState === "correct") {
             return (
                 <>
+                    <div>
+                      <Score score={this.state.score}/>
+                    </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
                         <PlayerYears years={randYears} />
@@ -333,6 +364,16 @@ class FetchData extends React.Component {
                     </div>
                 </>
             )
+        }
+        else if (won) {
+          return (
+          <>
+            <h1>You Won!!</h1>
+            <div>
+                <button className="button" onClick={this.fetchPlayerData}>Restart</button>
+            </div>
+          </>
+        )
         }
     }
 }

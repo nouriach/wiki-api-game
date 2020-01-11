@@ -1,6 +1,6 @@
 import React from 'react';
 
-class PlayAgain extends React.Component {
+class Score extends React.Component {
     render () {
         return (
             <>
@@ -11,4 +11,4 @@ class PlayAgain extends React.Component {
 }
 
 
-export default PlayAgain;
+export default Score;
