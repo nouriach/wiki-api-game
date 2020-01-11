@@ -281,6 +281,7 @@ class FetchData extends React.Component {
             randName: 'Gareth Barry'
         })
   }
+}
 
     setGameState = (e) => {
         this.setState ({
