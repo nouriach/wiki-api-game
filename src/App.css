@@ -31,7 +31,7 @@ p {
 
 .App {
   background: #fff;
-  box-shadow: 0 8px 12px #bfd6e6; 
+  box-shadow: 0 8px 12px #bfd6e6;
   border-radius: 12px;
   margin: 0 auto;
   max-width: 320px;
@@ -63,6 +63,29 @@ p {
   margin-bottom: 1rem;
   padding: 2rem 1rem 0;
   text-align: center;
+  animation: reveal 1s forwards;
+}
+
+.nameResults-container-wrong{
+  background-color: #DB7093;
+  border: 1px solid #800000;
+  color: #800000;
+  margin-bottom: 1rem;
+  padding: 2rem 1rem 0;
+  text-align: center;
+  animation: reveal 1s forwards;
+}
+
+
+@keyframes reveal {
+  0%{
+    transform: scale(0);
+    transform: translateY(10px);
+  }
+100%{
+    transform: scale(1);
+    transform: translateY(0px);
+  }
 }
 
 .result {
@@ -91,7 +114,7 @@ p {
 .button:active, .button:focus {
   background-color: #00426e;
   border-radius: 2px;
-  color: #fff;  
+  color: #fff;
   outline: 4px solid #197c40;
 }
 
@@ -133,6 +156,6 @@ form > button {
 form > button:active, .button:focus {
   background-color: #00426e;
   border-radius: 2px;
-  color: #fff;  
+  color: #fff;
   outline: 4px solid #197c40;
 }

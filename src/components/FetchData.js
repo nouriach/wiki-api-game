@@ -6,6 +6,7 @@ import PlayerName from './PlayerName';
 import PlayAgain from './PlayAgain';
 import PlayerAnswer from './PlayerAnswer';
 import GiveUp from './GiveUp';
+import Score from './Score';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -23,7 +24,11 @@ class FetchData extends React.Component {
             randYears: [],
             randGames: '',
 
-            gameState: false,
+            won: false,
+
+            score: 0,
+
+            gameState: 'progress',
 
             isLoaded: false,
         };
@@ -48,6 +53,9 @@ class FetchData extends React.Component {
                     randPlayerClubs: [],
                     randYears: [],
                     randGames: '',
+
+                    gameState: 'progress',
+                    score: 0,
                 })
             this.removeDataGaps(this.state.playerPool);
         })
@@ -118,7 +126,7 @@ class FetchData extends React.Component {
 
     resetGame = () => {
       this.setState({
-        gameState: false,
+        gameState: 'progress',
       })
       this.fetchClubList();
     }
@@ -158,13 +166,11 @@ class FetchData extends React.Component {
         let randId = this.state.playerName.indexOf(randPlayer)
 
         let footballerOption = this.state.playerPool;
-        console.log('footballer option', footballerOption);
         let footballerNew = randPlayer.toString().split(' ');
         // console.log('this is the full string', footballerOption);
         let i;
         for (i = 0; i < footballerOption.length; i++) {
             if (footballerOption[i].includes(footballerNew[1]) && (footballerOption[i-1].includes(footballerNew[0]) || footballerOption[i-2].includes(footballerNew[0]))) {
-                console.log('player ID in data pool', i);
 
                 let sliceStart = footballerOption.indexOf(footballerOption[i]);
                 let sliceEnd = sliceStart+15;
@@ -194,9 +200,7 @@ class FetchData extends React.Component {
         array[i] = array[i].toString().replace(/$\s/, '');
 
         if (array[i].toString().slice(-1) === ' ') {
-            console.log( array[i], 'there IS A space')
             array[i] = array[i].toString().replace(/.$/,'');
-            console.log( array[i], 'there IS A space 2')
 
         }
 
@@ -210,7 +214,6 @@ class FetchData extends React.Component {
     loopClubs = (playerStr, playerId, playerName) => {
 
         let playerNameToStr = this.state.playerName.toString()
-        console.log('recent string made', playerNameToStr);
         let randomPlayerClubs = [];
         let playerTeams = this.state.availableClubs;
         let playerTeamsStr = playerTeams.toString()
@@ -272,20 +275,46 @@ class FetchData extends React.Component {
             isLoaded: true,
 
         })
-        console.log(this.state)
-    }
 
-    setGameState = () => {
-        console.log('Game State', this.state.gameState);
-        this.setState ({
-            gameState: true,
+        if (this.state.randName == " flagicon") {
+          this.setState({
+            randName: 'Gareth Barry'
         })
-        console.log('Game State Update', this.state.gameState);
+  }
+}
+
+    setGameState = (e) => {
+        this.setState ({
+            gameState: 'correct',
+        })
+
+        if (e === "lost") {
+          this.setState({
+            gameState: 'incorrect',
+          })
+        }
+    }
+
+    updateScore = (answer) => {
+      if (answer === "correct") {
+        this.setState({
+          score: this.state.score + 1,
+        })
+        //if score is 5 or over 5 (to have a backup) then set the game to won.
+            if (this.state.score >= 4) {
+              this.setState({
+                won: true,
+                gameState: 'complete',
+              })
+            }
+      }
 
     }
+
+
 
     render() {
-        let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState} = this.state;
+        let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
         //
         if (!isLoaded) {
             return <>
@@ -299,16 +328,19 @@ class FetchData extends React.Component {
                 </>
         }
 
-        else if (isLoaded && !gameState) {
+        else if (isLoaded && (gameState === "progress")) {
             return (
                 <>
+                    <div>
+                      <Score score={this.state.score}/>
+                    </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
                         <PlayerYears years={randYears} />
                         <PlayerGames games={randGames} />
                     </div>
                     <div className="submit-container">
-                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState}/>
+                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore}/>
                     </div>
                     <div className="play-container">
                         <GiveUp sendFunction={this.setGameState} />
@@ -317,9 +349,12 @@ class FetchData extends React.Component {
             )
         }
 
-        else if (gameState) {
+        else if (gameState === "correct") {
             return (
                 <>
+                    <div>
+                      <Score score={this.state.score}/>
+                    </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
                         <PlayerYears years={randYears} />
@@ -333,6 +368,37 @@ class FetchData extends React.Component {
                     </div>
                 </>
             )
+        }
+        else if (gameState === "incorrect") {
+          return (
+              <>
+                  <div>
+                    <Score score={this.state.score}/>
+                  </div>
+                  <div id="Results">
+                      <PlayerClubs clubs={randPlayerClubs}/>
+                      <PlayerYears years={randYears} />
+                      <PlayerGames games={randGames} />
+                  </div>
+                  <div className="contentContainer nameResults-container-wrong">
+                      <h2>Try again</h2>
+                      <PlayerAnswer playerName={randName} />
+                  </div>
+                  <div className='play-container'>
+                      <PlayAgain sendFunction={this.resetGame} />
+                  </div>
+              </>
+          )
+        }
+        else if (won) {
+          return (
+          <>
+            <h1>You Won!!</h1>
+            <div>
+                <button className="button" onClick={this.fetchPlayerData}>Restart</button>
+            </div>
+          </>
+        )
         }
     }
 }
