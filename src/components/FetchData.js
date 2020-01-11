@@ -283,11 +283,17 @@ class FetchData extends React.Component {
         console.log(this.state)
     }
 
-    setGameState = () => {
+    setGameState = (e) => {
         console.log('Game State', this.state.gameState);
         this.setState ({
             gameState: 'correct',
         })
+
+        if (e === "lost") {
+          this.setState({
+            gameState: 'incorrect',
+          })
+        }
         console.log('Game State Update', this.state.gameState);
     }
 
@@ -364,6 +370,27 @@ class FetchData extends React.Component {
                     </div>
                 </>
             )
+        }
+        else if (gameState === "incorrect") {
+          return (
+              <>
+                  <div>
+                    <Score score={this.state.score}/>
+                  </div>
+                  <div id="Results">
+                      <PlayerClubs clubs={randPlayerClubs}/>
+                      <PlayerYears years={randYears} />
+                      <PlayerGames games={randGames} />
+                  </div>
+                  <div className="contentContainer nameResults-container-wrong">
+                      <h2>Try again</h2>
+                      <PlayerAnswer playerName={randName} />
+                  </div>
+                  <div className='play-container'>
+                      <PlayAgain sendFunction={this.resetGame} />
+                  </div>
+              </>
+          )
         }
         else if (won) {
           return (

@@ -43,6 +43,11 @@ class PlayerName extends React.Component {
                 guess: '',
             })
             this.state.guesses.push(playerGuess)
+            console.log('number of guesses', this.state.guesses.length);
+            if (this.state.guesses.length === 5) {
+              console.log('5 guesses reached');
+              this.props.setGameState('lost')
+            }
         }
     }
 
@@ -60,11 +65,13 @@ class PlayerName extends React.Component {
           <p key={index}>Guess {index + 1}: {row}</p>
         )
       })
+
+      let guesses = this.state.guesses.length;
             return (
             <>
             <div className="flex">
               <div>
-                <h3>Guesses Made</h3>
+                <h3>Guesses made {guesses} out of 5.</h3>
                 <p>{rows}</p>
               </div>
                 <div>
