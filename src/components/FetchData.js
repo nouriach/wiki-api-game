@@ -166,13 +166,11 @@ class FetchData extends React.Component {
         let randId = this.state.playerName.indexOf(randPlayer)
 
         let footballerOption = this.state.playerPool;
-        console.log('footballer option', footballerOption);
         let footballerNew = randPlayer.toString().split(' ');
         // console.log('this is the full string', footballerOption);
         let i;
         for (i = 0; i < footballerOption.length; i++) {
             if (footballerOption[i].includes(footballerNew[1]) && (footballerOption[i-1].includes(footballerNew[0]) || footballerOption[i-2].includes(footballerNew[0]))) {
-                console.log('player ID in data pool', i);
 
                 let sliceStart = footballerOption.indexOf(footballerOption[i]);
                 let sliceEnd = sliceStart+15;
@@ -202,9 +200,7 @@ class FetchData extends React.Component {
         array[i] = array[i].toString().replace(/$\s/, '');
 
         if (array[i].toString().slice(-1) === ' ') {
-            console.log( array[i], 'there IS A space')
             array[i] = array[i].toString().replace(/.$/,'');
-            console.log( array[i], 'there IS A space 2')
 
         }
 
@@ -218,7 +214,6 @@ class FetchData extends React.Component {
     loopClubs = (playerStr, playerId, playerName) => {
 
         let playerNameToStr = this.state.playerName.toString()
-        console.log('recent string made', playerNameToStr);
         let randomPlayerClubs = [];
         let playerTeams = this.state.availableClubs;
         let playerTeamsStr = playerTeams.toString()
@@ -280,11 +275,14 @@ class FetchData extends React.Component {
             isLoaded: true,
 
         })
-        console.log(this.state)
-    }
+
+        if (this.state.randName == " flagicon") {
+          this.setState({
+            randName: 'Gareth Barry'
+        })
+  }
 
     setGameState = (e) => {
-        console.log('Game State', this.state.gameState);
         this.setState ({
             gameState: 'correct',
         })
@@ -294,7 +292,6 @@ class FetchData extends React.Component {
             gameState: 'incorrect',
           })
         }
-        console.log('Game State Update', this.state.gameState);
     }
 
     updateScore = (answer) => {
