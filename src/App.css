@@ -52,12 +52,17 @@ p {
   font-size: 1.5rem;
 }
 
+.top-containerRed {
+  color: red;
+}
+
 .top-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding-bottom: 1rem;
 }
+
 
 .contentContainer {
   margin-bottom: 2rem;
