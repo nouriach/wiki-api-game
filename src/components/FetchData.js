@@ -72,11 +72,18 @@ class FetchData extends React.Component {
         this.myInterval = setInterval(()=> {
             let currentMin = this.state.countdownMin;
             let currentSec = this.state.countdownSec;
-            if (currentSec > 0 && currentMin >= 0) {
+            if (currentSec > 0 && currentMin > 0) {
                 let secDecrease = this.state.countdownSec - 1;
                 this.setState({
                     countdownSec: secDecrease,
                 })
+            }
+            else if (currentSec > 0 && currentMin == 0) {
+                let secDecrease = this.state.countdownSec - 1;
+                this.setState({
+                    countdownSec: secDecrease,
+                })
+                document.getElementById('countdown-result').className = 'top-containerRed';                
             }
             else if (currentSec === 0 && currentMin > 0){
                 this.setState({
@@ -90,37 +97,6 @@ class FetchData extends React.Component {
             }
         }, 1000)
     }
-
-
-     // setCountdown = () => {
-    //     let currentMin = this.state.countdownMin;
-    //     let currentSec = this.state.countdownSec;
-    //     console.log('Current Minute', currentMin);
-    //     console.log('Current Second', currentSec);
-
-    //     if (currentSec > 0 && currentMin > 0) {
-    //         let secDecrease = this.state.countdownSec - 1;
-    //         this.setState({
-    //             countdownMin: 4,
-    //             countdownSec: secDecrease,
-    //           })
-    //           console.log('New Minute', this.state.countdownMin);
-    //           console.log('New Second', this.state.countdownSec);
-    //     }
-    //     else if (currentSec === 0 && currentMin > 0){
-    //         let minDecrease = this.state.countdownSec - 1;
-    //         this.setState({
-    //             countdownMin: minDecrease,
-    //             countdownSec: 59,
-    //           })
-    //           console.log('New Minute', this.state.countdownMin);
-    //           console.log('New Second', this.state.countdownSec);
-    //     }
-    //     else {
-    //         console.log('end of setCountdown function')
-    //     }
-    // }; 
-    
 
     removeDataGaps = (playerPool) => {
         let playerPoolData = playerPool.toString().split('|');
