@@ -7,6 +7,7 @@ import PlayAgain from './PlayAgain';
 import PlayerAnswer from './PlayerAnswer';
 import GiveUp from './GiveUp';
 import Score from './Score';
+import Countdown from  './Countdown';
 
 class FetchData extends React.Component {
     constructor(props) {
@@ -27,6 +28,9 @@ class FetchData extends React.Component {
             won: false,
 
             score: 0,
+            
+            countdownMin: 4,
+            countdownSec: 59,
 
             gameState: 'progress',
 
@@ -58,10 +62,65 @@ class FetchData extends React.Component {
                     score: 0,
                 })
             this.removeDataGaps(this.state.playerPool);
+            this.setCountdown();
         })
         .catch(err => console.error(err)
         )
     }
+
+    setCountdown = () => {
+        this.myInterval = setInterval(()=> {
+            let currentMin = this.state.countdownMin;
+            let currentSec = this.state.countdownSec;
+            if (currentSec > 0 && currentMin >= 0) {
+                let secDecrease = this.state.countdownSec - 1;
+                this.setState({
+                    countdownSec: secDecrease,
+                })
+            }
+            else if (currentSec === 0 && currentMin > 0){
+                this.setState({
+                    countdownMin: this.state.countdownMin - 1,
+                    countdownSec: 59,
+                })
+            }
+            else {
+                // this needs to set a state which displays a summary of the player's last game
+                console.log('end of setCountdown function')
+            }
+        }, 1000)
+    }
+
+
+     // setCountdown = () => {
+    //     let currentMin = this.state.countdownMin;
+    //     let currentSec = this.state.countdownSec;
+    //     console.log('Current Minute', currentMin);
+    //     console.log('Current Second', currentSec);
+
+    //     if (currentSec > 0 && currentMin > 0) {
+    //         let secDecrease = this.state.countdownSec - 1;
+    //         this.setState({
+    //             countdownMin: 4,
+    //             countdownSec: secDecrease,
+    //           })
+    //           console.log('New Minute', this.state.countdownMin);
+    //           console.log('New Second', this.state.countdownSec);
+    //     }
+    //     else if (currentSec === 0 && currentMin > 0){
+    //         let minDecrease = this.state.countdownSec - 1;
+    //         this.setState({
+    //             countdownMin: minDecrease,
+    //             countdownSec: 59,
+    //           })
+    //           console.log('New Minute', this.state.countdownMin);
+    //           console.log('New Second', this.state.countdownSec);
+    //     }
+    //     else {
+    //         console.log('end of setCountdown function')
+    //     }
+    // }; 
+    
 
     removeDataGaps = (playerPool) => {
         let playerPoolData = playerPool.toString().split('|');
@@ -110,7 +169,6 @@ class FetchData extends React.Component {
     }
 
     fetchClubList = () => {
-
         fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20clubs&format=json&prop=wikitext&section=1')
         .then (resp => resp.json())
         .then (clubs => {
@@ -331,8 +389,9 @@ class FetchData extends React.Component {
         else if (isLoaded && (gameState === "progress")) {
             return (
                 <>
-                    <div>
+                    <div className="top-container">
                       <Score score={this.state.score}/>
+                      <Countdown minutes={this.state.countdownMin} seconds={this.state.countdownSec} />
                     </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
@@ -352,8 +411,9 @@ class FetchData extends React.Component {
         else if (gameState === "correct") {
             return (
                 <>
-                    <div>
+                    <div className="top-container">
                       <Score score={this.state.score}/>
+                      <Countdown minutes={this.state.countdownMin} seconds={this.state.countdownSec} />
                     </div>
                     <div id="Results">
                         <PlayerClubs clubs={randPlayerClubs}/>
@@ -372,21 +432,22 @@ class FetchData extends React.Component {
         else if (gameState === "incorrect") {
           return (
               <>
-                  <div>
+                <div className="top-container">
                     <Score score={this.state.score}/>
-                  </div>
-                  <div id="Results">
-                      <PlayerClubs clubs={randPlayerClubs}/>
-                      <PlayerYears years={randYears} />
-                      <PlayerGames games={randGames} />
-                  </div>
-                  <div className="contentContainer nameResults-container-wrong">
-                      <h2>Try again</h2>
-                      <PlayerAnswer playerName={randName} />
-                  </div>
-                  <div className='play-container'>
-                      <PlayAgain sendFunction={this.resetGame} />
-                  </div>
+                    <Countdown minutes={this.state.countdownMin} seconds={this.state.countdownSec} />
+                </div>
+                <div id="Results">
+                    <PlayerClubs clubs={randPlayerClubs}/>
+                    <PlayerYears years={randYears} />
+                    <PlayerGames games={randGames} />
+                </div>
+                <div className="contentContainer nameResults-container-wrong">
+                    <h2>Try again</h2>
+                    <PlayerAnswer playerName={randName} />
+                </div>
+                <div className='play-container'>
+                    <PlayAgain sendFunction={this.resetGame} />
+                </div>
               </>
           )
         }
