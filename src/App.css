@@ -52,6 +52,13 @@ p {
   font-size: 1.5rem;
 }
 
+.top-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
 .contentContainer {
   margin-bottom: 2rem;
 }
