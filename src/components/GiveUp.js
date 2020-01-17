@@ -4,7 +4,7 @@ class Score extends React.Component {
     render () {
         return (
             <>
-                <button className="button" onClick={this.props.sendFunction}>Give Up?</button>
+                <button className="button" onClick={this.props.sendFunction}>Skip Player</button>
             </>
         );
     }
