@@ -29,8 +29,8 @@ class FetchData extends React.Component {
 
             score: 0,
             
-            countdownMin: 4,
-            countdownSec: 59,
+            countdownMin: '',
+            countdownSec: '60',
 
             gameState: 'progress',
 
@@ -38,34 +38,47 @@ class FetchData extends React.Component {
         };
     }
 
-    fetchPlayerData = () => {
-
-        console.log('fetchPlayerData function');
-        fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
-        .then(response => response.json())
-        .then(data => {
-                data = data.parse.wikitext['*'];
-                this.setState ({
-                    playerPool: data,
-                    playerName: [],
-                    playerClubs: [],
-                    playerYears: [],
-                    playerGames: [],
-                    availableClubs: [],
-
-                    randName: '',
-                    randPlayerClubs: [],
-                    randYears: [],
-                    randGames: '',
-
-                    gameState: 'progress',
-                    score: 0,
-                })
-            this.removeDataGaps(this.state.playerPool);
-            this.setCountdown();
+    setCountdownValue = (e) => {
+        e.preventDefault();
+        // turn string to number
+        Number(e.target.value);
+        this.setState ({
+            countdownMin: e.target.value - 1,
         })
-        .catch(err => console.error(err)
-        )
+    }
+
+    fetchPlayerData = () => {
+        if (this.state.countdownMin === '') {
+            console.log('select a time');
+            // CSS on the timer buttons
+        }
+        else {
+            fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
+            .then(response => response.json())
+            .then(data => {
+                    data = data.parse.wikitext['*'];
+                    this.setState ({
+                        playerPool: data,
+                        playerName: [],
+                        playerClubs: [],
+                        playerYears: [],
+                        playerGames: [],
+                        availableClubs: [],
+    
+                        randName: '',
+                        randPlayerClubs: [],
+                        randYears: [],
+                        randGames: '',
+    
+                        gameState: 'progress',
+                        score: 0,
+                    })
+                this.removeDataGaps(this.state.playerPool);
+                this.setCountdown();
+            })
+            .catch(err => console.error(err)
+            )
+        }
     }
 
     setCountdown = () => {
@@ -78,18 +91,25 @@ class FetchData extends React.Component {
                     countdownSec: secDecrease,
                 })
             }
-            else if (currentSec > 0 && currentMin == 0) {
+            else if (currentSec > 0 && currentMin === 0) {
                 let secDecrease = this.state.countdownSec - 1;
                 this.setState({
                     countdownSec: secDecrease,
                 })
-                document.getElementById('countdown-result').className = 'top-containerRed';                
+                document.getElementById('countdown-result').className = 'top-containerRed';           
             }
             else if (currentSec === 0 && currentMin > 0){
                 this.setState({
                     countdownMin: this.state.countdownMin - 1,
                     countdownSec: 59,
                 })
+            }
+            else if (currentSec === 0 && currentMin === 0){
+                console.log('time is up');
+                    this.setState({
+                    won: false,
+                    gameState: 'gameOver',
+                    })
             }
             else {
                 // this needs to set a state which displays a summary of the player's last game
@@ -158,12 +178,26 @@ class FetchData extends React.Component {
         )
     }
 
-    resetGame = () => {
+    // The below function will show the next random player when you answer a correct question
+    nextPlayer = () => {
       this.setState({
         gameState: 'progress',
+        
       })
       this.fetchClubList();
     }
+
+    // The below function will show when the game is over and a new game needs to begin
+    resetGame = () => {
+        this.setState({
+          gameState: 'progress',
+          won: false,
+          score: 0,
+          countdownMin: 4,
+          countdownSec: 59,
+        })
+        this.fetchClubList();
+      }
 
     cleanClubs = (teams) => {
         // New API call turned into an array
@@ -223,7 +257,6 @@ class FetchData extends React.Component {
     removeCharacters = (array) => {
       //loop through the array and remove the special characters and FC / AFC from each entry
       //Remove whitespace at front or back of string in each array entry
-
       let i
       for (i = 0; i < array.length; i++) {
         array[i] = array[i].toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
@@ -232,16 +265,12 @@ class FetchData extends React.Component {
         array[i] = array[i].toString().replace(/A.F.C./g, '');
         array[i] = array[i].toString().replace(/^\s/, '');
         array[i] = array[i].toString().replace(/$\s/, '');
-
         if (array[i].toString().slice(-1) === ' ') {
             array[i] = array[i].toString().replace(/.$/,'');
-
         }
-
         else {
             console.log( array[i], 'there is no space');
         }
-        //
       }
     }
 
@@ -281,7 +310,6 @@ class FetchData extends React.Component {
             console.log('duplicate', x, playerClubList[x]);
           }
         }
-
         // console.log('loopClubs 4: this should be players clubs', playerclubStr)
         this.setState ({
             randPlayerClubs: playerClubsArray,
@@ -295,58 +323,42 @@ class FetchData extends React.Component {
      * where the number ISN'T value+15 for some reason)
      **/
     setPlayer = (id, clubs) => {
-        console.log('HELLO FROM SETPLAYER')
-        // console.log('setPlayer 1 ID:', id)
-        // console.log('setPlayer 2 clubs:', clubs)
-        // console.log('setPlayer 3 name:', this.state.playerName[id]);
-        // console.log('setPlayer 4 years:', this.state.playerYears[id]);
-        // console.log('setPlayer 5 games:', this.state.playerGames[id]);
         this.setState ({
             randName: this.state.playerName[id],
             randPlayerClubs: clubs,
             randYears: this.state.playerYears[id],
             randGames: this.state.playerGames[id],
             isLoaded: true,
-
         })
 
-        if (this.state.randName == " flagicon") {
+        if (this.state.randName === " flagicon") {
           this.setState({
             randName: 'Gareth Barry'
         })
   }
 }
-
     setGameState = (e) => {
         this.setState ({
             gameState: 'correct',
         })
-
         if (e === "lost") {
           this.setState({
-            gameState: 'incorrect',
+            gameState: 'gameOver',
           })
         }
     }
 
     updateScore = (answer) => {
-      if (answer === "correct") {
+        if (answer === "correct") {
         this.setState({
-          score: this.state.score + 1,
-        })
-        //if score is 5 or over 5 (to have a backup) then set the game to won.
-            if (this.state.score >= 4) {
-              this.setState({
-                won: true,
-                gameState: 'complete',
-              })
-            }
-      }
-
+            score: this.state.score + 1,
+            })   
+        }
+        else {
+          //  
+        }
     }
-
-
-
+    
     render() {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
         //
@@ -354,6 +366,22 @@ class FetchData extends React.Component {
             return <>
                     <div className="loading-container">
                         <h1>Can you guess the player from the years they played, the appearances they made and the Premier League clubs they played for?</h1>
+                    </div>
+                    <div>
+                        <p>How much time do you want?</p>
+                        <div>
+                            <button onClick={this.setCountdownValue} value='3' className="timer-button">3 Minutes</button>
+                            <button onClick={this.setCountdownValue} value='5' className="timer-button">5 Minutes</button>
+                            <button onClick={this.setCountdownValue} value='10' className="timer-button">10 Minutes</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Difficulty Level</p>
+                        <div>
+                            <button onClick={this.setCountdownValue} value='15' className="timer-button">Easy</button>
+                            <button onClick={this.setCountdownValue} value='10' className="timer-button">Medium</button>
+                            <button onClick={this.setCountdownValue} value='5' className="timer-button">Hard</button>
+                        </div>
                     </div>
                     <div>
                         <button className="button" onClick={this.fetchPlayerData}>Play</button>
@@ -400,7 +428,7 @@ class FetchData extends React.Component {
                         <PlayerAnswer playerName={randName} />
                     </div>
                     <div className='play-container'>
-                        <PlayAgain sendFunction={this.resetGame} />
+                        <PlayAgain sendFunction={this.nextPlayer} gameState={this.state.gameState} />
                     </div>
                 </>
             )
@@ -422,10 +450,25 @@ class FetchData extends React.Component {
                     <PlayerAnswer playerName={randName} />
                 </div>
                 <div className='play-container'>
-                    <PlayAgain sendFunction={this.resetGame} />
+                    <PlayAgain sendFunction={this.nextPlayer} />
                 </div>
               </>
           )
+        }
+        else if (gameState === 'gameOver') {
+            return (
+                <>
+                    <div>   
+                        <h3>Game Over</h3>
+                    </div>
+                    <div>
+                        <Score score={this.state.score}/>
+                    </div>
+                    <div className='play-container'>
+                        <PlayAgain sendFunction={this.resetGame} />
+                    </div>
+                </>
+            )
         }
         else if (won) {
           return (
