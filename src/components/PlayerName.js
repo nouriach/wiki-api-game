@@ -21,8 +21,8 @@ class PlayerName extends React.Component {
     }
 
     handleSubmit = (e) => {
-        console.log('hello from handleSubmit')
-        console.log('player name from parent', this.props.playerName)
+        // console.log('hello from handleSubmit')
+        // console.log('player name from parent', this.props.playerName)
         e.preventDefault();
         console.log(this.state)
         let playerGuess = this.state.guess.toLowerCase();
@@ -43,7 +43,7 @@ class PlayerName extends React.Component {
                 guess: '',
             })
             this.state.guesses.push(playerGuess)
-            console.log('number of guesses', this.state.guesses.length);
+            // console.log('number of guesses', this.state.guesses.length);
             if (this.state.guesses.length === 5) {
               console.log('5 guesses reached');
               this.props.setGameState('lost')
@@ -56,8 +56,8 @@ class PlayerName extends React.Component {
 
     /*****
      Once the player selects 'play again', how can the div below switch to the original display?
-
      ****/
+
     render () {
       const rows = this.state.guesses.map((row, index) => {
 
@@ -71,7 +71,8 @@ class PlayerName extends React.Component {
             <>
             <div className="flex">
               <div>
-                <h3>Guesses made {guesses} out of 5.</h3>
+                  {/* the below '5' will need to be a state value set from the homepage */}
+                <h3>Total guesses used: {guesses}/5</h3>
                 <p>{rows}</p>
               </div>
                 <div>
