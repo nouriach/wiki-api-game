@@ -28,6 +28,8 @@ class FetchData extends React.Component {
             won: false,
 
             score: 0,
+            lives: '',
+            incorrectAnswers: [],
             
             countdownMin: '',
             countdownSec: '60',
@@ -47,9 +49,17 @@ class FetchData extends React.Component {
         })
     }
 
+    setLivesValue = (e) => {
+        e.preventDefault();
+        Number(e.target.value);
+        console.log('lives', e.target.value)
+        this.setState ({
+            lives: e.target.value,
+        })
+    }
+
     fetchPlayerData = () => {
-        if (this.state.countdownMin === '') {
-            console.log('select a time');
+        if (this.state.countdownMin === '' || this.state.lives === '') {
             // CSS on the timer buttons
         }
         else {
@@ -193,8 +203,6 @@ class FetchData extends React.Component {
           gameState: 'progress',
           won: false,
           score: 0,
-          countdownMin: 4,
-          countdownSec: 59,
         })
         this.fetchClubList();
       }
@@ -378,9 +386,9 @@ class FetchData extends React.Component {
                     <div>
                         <p>Difficulty Level</p>
                         <div>
-                            <button onClick={this.setCountdownValue} value='15' className="timer-button">Easy</button>
-                            <button onClick={this.setCountdownValue} value='10' className="timer-button">Medium</button>
-                            <button onClick={this.setCountdownValue} value='5' className="timer-button">Hard</button>
+                            <button onClick={this.setLivesValue} value='15' className="timer-button">Easy</button>
+                            <button onClick={this.setLivesValue} value='10' className="timer-button">Medium</button>
+                            <button onClick={this.setLivesValue} value='5' className="timer-button">Hard</button>
                         </div>
                     </div>
                     <div>
@@ -403,7 +411,7 @@ class FetchData extends React.Component {
                         <PlayerGames games={randGames} />
                     </div>
                     <div className="submit-container">
-                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore}/>
+                        <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore} remainingLives={this.state.lives} answers={this.state.incorrectAnswers}/>
                     </div>
                     <div className="play-container">
                         <GiveUp sendFunction={this.setGameState} />
