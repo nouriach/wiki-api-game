@@ -5,11 +5,9 @@ class PlayerName extends React.Component {
         super(props);
         this.state = {
             guess: '',
-            guesses: [],
     };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
-
     }
 
     handleChange = (e) => {
@@ -17,18 +15,12 @@ class PlayerName extends React.Component {
         this.setState ({
             [name]: value,
         })
-        console.log(value);
     }
 
     handleSubmit = (e) => {
-        // console.log('hello from handleSubmit')
-        // console.log('player name from parent', this.props.playerName)
         e.preventDefault();
-        console.log(this.state)
         let playerGuess = this.state.guess.toLowerCase();
         let answer = this.props.playerName.toLowerCase();
-        console.log(playerGuess);
-        console.log(answer) ;
         if (playerGuess === answer) {
             console.log('correct answer');
             this.setState({
@@ -42,10 +34,9 @@ class PlayerName extends React.Component {
             this.setState({
                 guess: '',
             })
-            this.state.guesses.push(playerGuess)
-            // console.log('number of guesses', this.state.guesses.length);
-            if (this.state.guesses.length === 5) {
-              console.log('5 guesses reached');
+            this.props.answers.push(playerGuess)
+            if (this.props.answers.length === this.props.remainingLives) {
+              console.log('5 answers reached');
               this.props.setGameState('lost')
             }
         }
@@ -59,20 +50,20 @@ class PlayerName extends React.Component {
      ****/
 
     render () {
-      const rows = this.state.guesses.map((row, index) => {
+      const rows = this.props.answers.map((row, index) => {
 
         return (
           <p key={index}>Guess {index + 1}: {row}</p>
         )
       })
 
-      let guesses = this.state.guesses.length;
+      let answers = this.props.answers.length;
             return (
             <>
             <div className="flex">
               <div>
                   {/* the below '5' will need to be a state value set from the homepage */}
-                <h3>Total guesses used: {guesses}/5</h3>
+                <h3>Total guesses used: {answers}/{this.props.remainingLives} </h3>
                 <p>{rows}</p>
               </div>
                 <div>
