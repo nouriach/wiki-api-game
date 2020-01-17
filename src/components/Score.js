@@ -4,7 +4,7 @@ class PlayAgain extends React.Component {
     render () {
         return (
             <>
-                <h3>Score: {this.props.score} / 5 </h3>
+                <h3>Score: {this.props.score}</h3>
             </>
         );
     }
