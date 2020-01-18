@@ -60,7 +60,7 @@ class FetchData extends React.Component {
 
     fetchPlayerData = () => {
         if (this.state.countdownMin === '' || this.state.lives === '') {
-            // CSS on the timer buttons
+            // CSS needs to occur here to show the user that they need to select a time and difficult level
         }
         else {
             fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
@@ -369,26 +369,27 @@ class FetchData extends React.Component {
     
     render() {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
-        //
+        
         if (!isLoaded) {
+            // this should all be a single component?
             return <>
                     <div className="loading-container">
                         <h1>Can you guess the player from the years they played, the appearances they made and the Premier League clubs they played for?</h1>
-                    </div>
-                    <div>
-                        <p>How much time do you want?</p>
                         <div>
-                            <button onClick={this.setCountdownValue} value='3' className="timer-button">3 Minutes</button>
-                            <button onClick={this.setCountdownValue} value='5' className="timer-button">5 Minutes</button>
-                            <button onClick={this.setCountdownValue} value='10' className="timer-button">10 Minutes</button>
+                            <p>How much time do you want?</p>
+                            <div id="gameSpec-btn">
+                                <button onClick={this.setCountdownValue} value='3'>3 Min</button>
+                                <button onClick={this.setCountdownValue} value='5'>5 Min</button>
+                                <button onClick={this.setCountdownValue} value='10'>10 Min</button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <p>Difficulty Level</p>
                         <div>
-                            <button onClick={this.setLivesValue} value='15' className="timer-button">Easy</button>
-                            <button onClick={this.setLivesValue} value='10' className="timer-button">Medium</button>
-                            <button onClick={this.setLivesValue} value='5' className="timer-button">Hard</button>
+                            <p>Difficult level?</p>
+                            <div id="gameSpec-btn">
+                                <button onClick={this.setLivesValue} value='15'>Easy</button>
+                                <button onClick={this.setLivesValue} value='10'>Medium</button>
+                                <button onClick={this.setLivesValue} value='5'>Hard</button>
+                            </div>
                         </div>
                     </div>
                     <div>
