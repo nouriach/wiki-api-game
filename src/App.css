@@ -12,10 +12,6 @@ body {
   padding: 2rem;
 }
 
-.loading-container {
-    padding: 1rem;
-    text-align: center;
-}
 
 h1, h2, h3 {
   font-size: 1rem;
@@ -52,10 +48,63 @@ p {
   font-size: 1.5rem;
 }
 
+/* Loading Page */
+
+.game-container {
+  text-align: center;
+}
+
+.loading-container {
+  padding: 1rem;
+}
+
+.loading-container > div, p {
+  margin: .5rem;
+}
+
+#gameSpec-btn {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.gameSpec-btnRed {
+  background-color: red;
+}
+
+#gameSpec-btn > button {
+  background-color: transparent;
+  border: 1px solid #00426e;
+  border-radius: 2px;
+  color: #00426e;
+  cursor: pointer;
+  font: 0 10px/17px sans-serif;
+  padding: 9px 9px;
+  text-transform: uppercase;
+  transition: ease all .3s;
+}
+
+#gameSpec-btn > button:hover {
+  box-shadow: 0 2px 2px black;
+  transform: translateY(-1px);
+ }
+
+ #gameSpec-btn > button:focus {
+  background: #90ee90;
+  color: #00426e;;
+}
+
+#gameSpec-btn > button:focus {
+  outline: 1px solid #90ee90;;
+  outline-offset: -4px;
+}
+
+button:active {
+  transform: scale(0.99);
+}
+
 .top-containerRed {
   color: red;
 }
-
 .top-container {
   display: flex;
   flex-direction: row;
