@@ -93,7 +93,7 @@ class FetchData extends React.Component {
       console.log('random number', randomPlayerID);
       let randomPlayer = this.state.playerPool[randomPlayerID];
       console.log('selected Player', randomPlayer);
-      
+
       this.setState({
         randName: randomPlayer.name,
         randGames: randomPlayer.totalApps,
@@ -144,7 +144,7 @@ class FetchData extends React.Component {
         gameState: 'progress',
 
       })
-      this.fetchClubList();
+      this.selectRandomPlayer();
     }
 
     // The below function will show when the game is over and a new game needs to begin
@@ -154,7 +154,7 @@ class FetchData extends React.Component {
           won: false,
           score: 0,
         })
-        this.fetchClubList();
+        this.selectRandomPlayer();
       }
 
 
