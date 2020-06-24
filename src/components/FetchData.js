@@ -29,7 +29,7 @@ class FetchData extends React.Component {
             countdownMin: '',
             countdownSec: '60',
 
-            gameState: 'progress',
+            gameState: 'newGame',
 
             isLoaded: false,
         };
@@ -137,10 +137,8 @@ class FetchData extends React.Component {
             }
             else {
                 // this needs to set a state which displays a summary of the player's last game
+                // TODO: Find a way for this to not trigger when Restart Game is pressed.
                 console.log('end of setCountdown function')
-                this.setState({
-                  gameState: 'gameOver',
-                })
             }
         }, 1000)
     }
@@ -156,9 +154,19 @@ class FetchData extends React.Component {
     // The below function will show when the game is over and a new game needs to begin
     resetGame = () => {
         this.setState({
-          gameState: 'progress',
+          playerPool: [],
+          randName: '',
+          randPlayerClubs: [],
+          randYears: [],
+          randGames: '',
           won: false,
           score: 0,
+          lives: '',
+          incorrectAnswers: [],
+          countdownMin: '',
+          countdownSec: '60',
+          gameState: 'newGame',
+          isLoaded: false,
         })
         this.selectRandomPlayer();
       }
@@ -189,7 +197,7 @@ class FetchData extends React.Component {
     render() {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
 
-        if (!isLoaded) {
+        if (!isLoaded && (gameState === "newGame")) {
             // this should all be a single component?
             return <>
                     <div className="loading-container">
@@ -293,7 +301,7 @@ class FetchData extends React.Component {
                         <Score score={this.state.score}/>
                     </div>
                     <div className='play-container'>
-                        <PlayAgain sendFunction={this.resetGame} />
+                        <PlayAgain restartGame={this.resetGame} />
                     </div>
                 </>
             )

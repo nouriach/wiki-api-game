@@ -16,6 +16,7 @@ class PlayerName extends React.Component {
             [name]: value,
         })
     }
+    
 
     handleSubmit = (e) => {
         e.preventDefault();
