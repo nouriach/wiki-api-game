@@ -5,7 +5,6 @@ class PlayAgain extends React.Component {
         return (
             <>
                 <button className="button" onClick={this.props.sendFunction}>Next Player</button>
-                <p>test: {this.props.gameState}</p>
             </>
         );
     }

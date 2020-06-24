@@ -14,11 +14,6 @@ class FetchData extends React.Component {
         super(props);
         this.state = {
             playerPool: [],
-            playerName: [],
-            playerClubs: [],
-            playerYears: [],
-            playerGames: [],
-            availableClubs: [],
 
             randName: '',
             randPlayerClubs: [],
@@ -44,6 +39,10 @@ class FetchData extends React.Component {
         e.preventDefault();
         // turn string to number
         Number(e.target.value);
+        document.getElementById('3min').classList.remove('active')
+        document.getElementById('5min').classList.remove('active')
+        document.getElementById('10min').classList.remove('active')
+        e.target.className = "active"
         this.setState ({
             countdownMin: e.target.value - 1,
         })
@@ -52,15 +51,22 @@ class FetchData extends React.Component {
     setLivesValue = (e) => {
         e.preventDefault();
         Number(e.target.value);
-        console.log('lives', e.target.value)
+        document.getElementById('easy').classList.remove('active')
+        document.getElementById('medium').classList.remove('active')
+        document.getElementById('hard').classList.remove('active')
+        e.target.className = "active"
         this.setState ({
             lives: e.target.value,
         })
     }
 
     fetchPlayerData = () => {
-        if (this.state.countdownMin === '' || this.state.lives === '') {
+        if (this.state.countdownMin === '') {
             // CSS needs to occur here to show the user that they need to select a time and difficult level
+            alert('please select a time')
+        }
+        if (this.state.lives === '') {
+          alert('please select a difficulty')
         }
         else {
             fetch('https://v2-api.sheety.co/7f01a568513886dcd760b17376d01421/premierLeaguePlayers/sheet1')
@@ -135,6 +141,9 @@ class FetchData extends React.Component {
             else {
                 // this needs to set a state which displays a summary of the player's last game
                 console.log('end of setCountdown function')
+                this.setState({
+                  gameState: 'gameOver',
+                })
             }
         }, 1000)
     }
@@ -179,9 +188,6 @@ class FetchData extends React.Component {
             score: this.state.score + 1,
             })
         }
-        else {
-          //
-        }
     }
 
     render() {
@@ -195,17 +201,17 @@ class FetchData extends React.Component {
                         <div>
                             <p>How much time do you want?</p>
                             <div id="gameSpec-btn">
-                                <button onClick={this.setCountdownValue} value='3'>3 Min</button>
-                                <button onClick={this.setCountdownValue} value='5'>5 Min</button>
-                                <button onClick={this.setCountdownValue} value='10'>10 Min</button>
+                                <button className="countdownButton" id="3min" onClick={this.setCountdownValue} value='3'>3 Min</button>
+                                <button className="countdownButton" id="5min" onClick={this.setCountdownValue} value='5'>5 Min</button>
+                                <button className="countdownButton" id="10min" onClick={this.setCountdownValue} value='10'>10 Min</button>
                             </div>
                         </div>
                         <div>
                             <p>Difficult level?</p>
                             <div id="gameSpec-btn">
-                                <button onClick={this.setLivesValue} value='15'>Easy</button>
-                                <button onClick={this.setLivesValue} value='10'>Medium</button>
-                                <button onClick={this.setLivesValue} value='5'>Hard</button>
+                                <button className="difficultyButton" id="easy" onClick={this.setLivesValue} value='15'>Easy</button>
+                                <button className="difficultyButton" id="medium" onClick={this.setLivesValue} value='10'>Medium</button>
+                                <button className="difficultyButton" id="hard" onClick={this.setLivesValue} value='5'>Hard</button>
                             </div>
                         </div>
                     </div>
