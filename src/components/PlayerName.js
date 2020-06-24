@@ -34,7 +34,7 @@ class PlayerName extends React.Component {
                 guess: '',
             })
             this.props.answers.push(playerGuess)
-            if (this.props.answers.length === this.props.remainingLives) {
+            if (this.props.answers.length === Number(this.props.remainingLives)) {
               this.props.setGameState('lost')
             }
         }
@@ -61,7 +61,7 @@ class PlayerName extends React.Component {
             <div className="flex">
               <div>
                 <h3>Total guesses used: {answers}/{this.props.remainingLives} </h3>
-                <p>{rows}</p>
+                <div>{rows}</div>
               </div>
                 <div>
                     <form>
