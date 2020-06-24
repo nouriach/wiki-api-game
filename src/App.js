@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <h1 className="appHeader">Who is the Premier League Footballer?</h1>
       </header>
-      <div class='game-container'>
+      <div className='game-container'>
         <FetchData />
       </div>
     </div>
