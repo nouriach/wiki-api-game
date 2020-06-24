@@ -94,11 +94,8 @@ class FetchData extends React.Component {
     }
 
     selectRandomPlayer = (players) => {
-      console.log('players', this.state.playerPool);
-      let randomPlayerID = Math.floor((Math.random() * this.state.playerPool.length + 1));
-      console.log('random number', randomPlayerID);
+      let randomPlayerID = Math.floor((Math.random() * this.state.playerPool.length) + 1);
       let randomPlayer = this.state.playerPool[randomPlayerID];
-      console.log('selected Player', randomPlayer);
 
       this.setState({
         randName: randomPlayer.name,
@@ -168,7 +165,6 @@ class FetchData extends React.Component {
 
 
     skipPlayer = () => {
-      console.log('skipping');
       this.selectRandomPlayer();
     }
     setGameState = (e) => {
