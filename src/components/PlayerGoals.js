@@ -1,9 +1,6 @@
 import React from 'react';
 
 const PlayerGoals = props => {
-    // const listItems = props.goals.map((goals, id) =>
-    //     <p key={id} className="goals">{goals}</p>
-    // )
     return (
         <>
         <div className="contentContainer">

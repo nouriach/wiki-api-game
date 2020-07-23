@@ -88,12 +88,12 @@ p {
   transform: translateY(-1px);
  }
 
- #gameSpec-btn > button:focus {
+ #gameSpec-btn > button:focus, #gameSpec-btn > button.active {
   background: #90ee90;
   color: #00426e;;
 }
 
-#gameSpec-btn > button:focus {
+#gameSpec-btn > button:focus, #gameSpec-btn > button.active {
   outline: 1px solid #90ee90;;
   outline-offset: -4px;
 }

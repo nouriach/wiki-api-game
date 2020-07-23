@@ -16,6 +16,7 @@ class PlayerName extends React.Component {
             [name]: value,
         })
     }
+    
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -30,13 +31,11 @@ class PlayerName extends React.Component {
             this.props.updateScore('correct');
         }
         else {
-            console.log('your answer is wrong');
             this.setState({
                 guess: '',
             })
             this.props.answers.push(playerGuess)
-            if (this.props.answers.length === this.props.remainingLives) {
-              console.log('5 answers reached');
+            if (this.props.answers.length === Number(this.props.remainingLives)) {
               this.props.setGameState('lost')
             }
         }
@@ -62,9 +61,8 @@ class PlayerName extends React.Component {
             <>
             <div className="flex">
               <div>
-                  {/* the below '5' will need to be a state value set from the homepage */}
                 <h3>Total guesses used: {answers}/{this.props.remainingLives} </h3>
-                <p>{rows}</p>
+                <div>{rows}</div>
               </div>
                 <div>
                     <form>

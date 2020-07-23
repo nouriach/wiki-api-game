@@ -4,8 +4,7 @@ class PlayAgain extends React.Component {
     render () {
         return (
             <>
-                <button className="button" onClick={this.props.sendFunction}>Next Player</button>
-                <p>test: {this.props.gameState}</p>
+                <button className="button" onClick={this.props.restartGame}>Restart Game</button>
             </>
         );
     }

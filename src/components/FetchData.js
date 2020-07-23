@@ -14,11 +14,6 @@ class FetchData extends React.Component {
         super(props);
         this.state = {
             playerPool: [],
-            playerName: [],
-            playerClubs: [],
-            playerYears: [],
-            playerGames: [],
-            availableClubs: [],
 
             randName: '',
             randPlayerClubs: [],
@@ -30,11 +25,11 @@ class FetchData extends React.Component {
             score: 0,
             lives: '',
             incorrectAnswers: [],
-            
+
             countdownMin: '',
             countdownSec: '60',
 
-            gameState: 'progress',
+            gameState: 'newGame',
 
             isLoaded: false,
         };
@@ -44,6 +39,10 @@ class FetchData extends React.Component {
         e.preventDefault();
         // turn string to number
         Number(e.target.value);
+        document.getElementById('3min').classList.remove('active')
+        document.getElementById('5min').classList.remove('active')
+        document.getElementById('10min').classList.remove('active')
+        e.target.className = "active"
         this.setState ({
             countdownMin: e.target.value - 1,
         })
@@ -52,43 +51,58 @@ class FetchData extends React.Component {
     setLivesValue = (e) => {
         e.preventDefault();
         Number(e.target.value);
-        console.log('lives', e.target.value)
+        document.getElementById('easy').classList.remove('active')
+        document.getElementById('medium').classList.remove('active')
+        document.getElementById('hard').classList.remove('active')
+        e.target.className = "active"
         this.setState ({
             lives: e.target.value,
         })
     }
 
     fetchPlayerData = () => {
-        if (this.state.countdownMin === '' || this.state.lives === '') {
+        if (this.state.countdownMin === '') {
             // CSS needs to occur here to show the user that they need to select a time and difficult level
+            alert('please select a time')
+        }
+        if (this.state.lives === '') {
+          alert('please select a difficulty')
         }
         else {
-            fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20players&format=json&prop=wikitext&section=1')
+            fetch('https://v2-api.sheety.co/7f01a568513886dcd760b17376d01421/premierLeaguePlayers/sheet1')
             .then(response => response.json())
             .then(data => {
-                    data = data.parse.wikitext['*'];
+                    data = data.sheet1;
                     this.setState ({
                         playerPool: data,
-                        playerName: [],
-                        playerClubs: [],
-                        playerYears: [],
-                        playerGames: [],
-                        availableClubs: [],
-    
+
                         randName: '',
                         randPlayerClubs: [],
                         randYears: [],
                         randGames: '',
-    
+
                         gameState: 'progress',
                         score: 0,
+                        isLoaded: true,
                     })
-                this.removeDataGaps(this.state.playerPool);
+                this.selectRandomPlayer(this.state.playerPool);
                 this.setCountdown();
             })
             .catch(err => console.error(err)
             )
         }
+    }
+
+    selectRandomPlayer = (players) => {
+      let randomPlayerID = Math.floor((Math.random() * this.state.playerPool.length) + 1);
+      let randomPlayer = this.state.playerPool[randomPlayerID];
+
+      this.setState({
+        randName: randomPlayer.name,
+        randGames: randomPlayer.totalApps,
+        randYears: `${randomPlayer.firstApp} - ${randomPlayer.lastApp}`,
+        randPlayerClubs: randomPlayer.clubs.split(","),
+      })
     }
 
     setCountdown = () => {
@@ -106,7 +120,7 @@ class FetchData extends React.Component {
                 this.setState({
                     countdownSec: secDecrease,
                 })
-                document.getElementById('countdown-result').className = 'top-containerRed';           
+                document.getElementById('countdown-result').className = 'top-containerRed';
             }
             else if (currentSec === 0 && currentMin > 0){
                 this.setState({
@@ -123,228 +137,44 @@ class FetchData extends React.Component {
             }
             else {
                 // this needs to set a state which displays a summary of the player's last game
+                // TODO: Find a way for this to not trigger when Restart Game is pressed.
                 console.log('end of setCountdown function')
             }
         }, 1000)
     }
-
-    removeDataGaps = (playerPool) => {
-        let playerPoolData = playerPool.toString().split('|');
-        // the below arrays will eventually be asignd to the states
-        let playerNameArray = [];
-        let playerYearsArray = [];
-        let playerGamesArray = [];
-
-        let i;
-        for (i=0; i < playerPoolData.length; i++) {
-            if (playerPoolData[i] === "" || playerPoolData[i].includes('sortname')) {
-                // remove empty spaces
-                playerPoolData.splice(i,1);
-                i--;
-            }
-            else if (playerPoolData[i].includes('flagicon')) {
-                // set player appearances
-                let playerGames = playerPoolData[i+5]
-                playerGamesArray.push(playerGames);
-            }
-            else if (playerPoolData[i].includes('align="left"')){
-                // set player name
-                let nameLoop = `${playerPoolData[i+2]} ${playerPoolData[i+3]}`.replace(/[[`~!@#$%^&*()=_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-                // set player career years
-                let yearsLoop = `${playerPoolData[i-3]} - ${playerPoolData[i-2]}`
-                playerNameArray.push(nameLoop);
-                playerYearsArray.push(yearsLoop);
-            }
-        }
-        //remove bad data at the start
-        playerYearsArray.shift();
-        /****
-          Below each state array has the same amount of values in it, therefore
-          number '30' will always represent the same player's information.
-          PlayerClubs is still incomplete.
-         ****/
-
-        this.setState ({
-            playerPool: playerPoolData,
-            playerName: playerNameArray,
-            playerClubs: [],
-            playerYears: playerYearsArray,
-            playerGames: playerGamesArray,
-        })
-        this.fetchClubList();
-    }
-
-    fetchClubList = () => {
-        fetch('https://en.wikipedia.org/w/api.php?&origin=*&action=parse&page=List%20of%20Premier%20League%20clubs&format=json&prop=wikitext&section=1')
-        .then (resp => resp.json())
-        .then (clubs => {
-                clubs = clubs.parse.wikitext['*'];
-                this.setState ({
-                    availableClubs: clubs,
-                })
-                this.cleanClubs(this.state.availableClubs)
-            })
-        .catch(err => console.error(err)
-        )
-    }
-
     // The below function will show the next random player when you answer a correct question
     nextPlayer = () => {
       this.setState({
         gameState: 'progress',
-        
+
       })
-      this.fetchClubList();
+      this.selectRandomPlayer();
     }
 
     // The below function will show when the game is over and a new game needs to begin
     resetGame = () => {
         this.setState({
-          gameState: 'progress',
+          playerPool: [],
+          randName: '',
+          randPlayerClubs: [],
+          randYears: [],
+          randGames: '',
           won: false,
           score: 0,
+          lives: '',
+          incorrectAnswers: [],
+          countdownMin: '',
+          countdownSec: '60',
+          gameState: 'newGame',
+          isLoaded: false,
         })
-        this.fetchClubList();
+        this.selectRandomPlayer();
       }
 
-    cleanClubs = (teams) => {
-        // New API call turned into an array
-        let teamData = teams.toString().split('|');
-        let finalTeamsArray = []
-        let value;
-        for (value = 0; value < teamData.length; value++) {
-            if (teamData[value] === "") {
-                // remove gaps in the array
-                teamData.splice(value,1);
-            }
-            /****
-             If a value includes 'F.C.' && is below a certain character length (longest team name)
-             then it will be added to the finalTeamsArray.
-             ***/
-            else if (teamData[value].includes('F.C.') && (teamData[value].length < 33)) {
-                let teamName = teamData[value].replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
-                finalTeamsArray.push(teamName);
-            }
-        }
-        //remove the incorrect team at the end
-        finalTeamsArray.pop();
-        this.setState ({
-            availableClubs: finalTeamsArray,
-        });
-        this.storeClubs()
+
+    skipPlayer = () => {
+      this.selectRandomPlayer();
     }
-
-    storeClubs = () => {
-        //select a random player
-        let randPlayer = this.state.playerName[Math.floor(Math.random()*this.state.playerName.length)];
-        console.log('random player 1:', randPlayer);
-        //find out what position in the array this player's ID is
-        let randId = this.state.playerName.indexOf(randPlayer)
-
-        let footballerOption = this.state.playerPool;
-        let footballerNew = randPlayer.toString().split(' ');
-        // console.log('this is the full string', footballerOption);
-        let i;
-        for (i = 0; i < footballerOption.length; i++) {
-            if (footballerOption[i].includes(footballerNew[1]) && (footballerOption[i-1].includes(footballerNew[0]) || footballerOption[i-2].includes(footballerNew[0]))) {
-
-                let sliceStart = footballerOption.indexOf(footballerOption[i]);
-                let sliceEnd = sliceStart+15;
-                // IF THE BELOW CONSOLE.LOGS DON'T SHOW CORRECTLY THEN THE PLAYER'S CLUBS CAN'T BE CREATED
-                // console.log('index slice start:', sliceStart);
-                // console.log('index slice end', sliceEnd);
-                let newString = footballerOption.slice(sliceStart, sliceEnd);
-                this.loopClubs(newString, randId, randPlayer);
-            }
-            else {
-                console.log('lost player');
-            }
-        }
-    }
-
-    removeCharacters = (array) => {
-      //loop through the array and remove the special characters and FC / AFC from each entry
-      //Remove whitespace at front or back of string in each array entry
-      let i
-      for (i = 0; i < array.length; i++) {
-        array[i] = array[i].toString().replace(/[[`~!@#$%^&*()=_|+\-=?;:'",<>\{\}\[\]\\\/]/gi, '');
-        array[i] = array[i].toString().replace(/ F.C./g, '');
-        array[i] = array[i].toString().replace(/ F.C/g, '');
-        array[i] = array[i].toString().replace(/A.F.C./g, '');
-        array[i] = array[i].toString().replace(/^\s/, '');
-        array[i] = array[i].toString().replace(/$\s/, '');
-        if (array[i].toString().slice(-1) === ' ') {
-            array[i] = array[i].toString().replace(/.$/,'');
-        }
-        else {
-            console.log( array[i], 'there is no space');
-        }
-      }
-    }
-
-    loopClubs = (playerStr, playerId, playerName) => {
-
-        let playerNameToStr = this.state.playerName.toString()
-        let randomPlayerClubs = [];
-        let playerTeams = this.state.availableClubs;
-        let playerTeamsStr = playerTeams.toString()
-        let playerValue;
-        //put the player string into an array that can be manipulated
-        let playerStrSort = playerStr.toString().split(",")
-        console.log(playerStrSort);
-
-        //remove unwanted characters from playerStrSort array
-        this.removeCharacters(playerStrSort)
-
-        for (playerValue=0; playerValue < playerStrSort.length; playerValue++) {
-            if (playerTeamsStr.includes(playerStrSort[playerValue])) {
-                randomPlayerClubs.push(playerStrSort[playerValue]);
-            }
-        }
-        //Make randomPlayerClubs an array that can be manipulated
-        let playerClubList = randomPlayerClubs.toString().split(',')
-
-        //Remove unwanted characters from playerClubList array
-        this.removeCharacters(playerClubList)
-
-        //Check if there are any arrays in the club list, create a new array that doesn't contain any duplicates
-        let x;
-        let playerClubsArray = [];
-        for (x=0; x < playerClubList.length; x++) {
-          if (!playerClubsArray.includes(playerClubList[x]) && !playerNameToStr.includes(playerClubList[x])) {
-            playerClubsArray.push(playerClubList[x])
-          }
-          else {
-            console.log('duplicate', x, playerClubList[x]);
-          }
-        }
-        // console.log('loopClubs 4: this should be players clubs', playerclubStr)
-        this.setState ({
-            randPlayerClubs: playerClubsArray,
-        })
-        this.setPlayer(playerId, playerClubsArray)
-    }
-
-    /******
-     * Function below displays all required info in the console.
-     * Some times it fails to bring through the player's teams (may associated with the 'id' number issue
-     * where the number ISN'T value+15 for some reason)
-     **/
-    setPlayer = (id, clubs) => {
-        this.setState ({
-            randName: this.state.playerName[id],
-            randPlayerClubs: clubs,
-            randYears: this.state.playerYears[id],
-            randGames: this.state.playerGames[id],
-            isLoaded: true,
-        })
-
-        if (this.state.randName === " flagicon") {
-          this.setState({
-            randName: 'Gareth Barry'
-        })
-  }
-}
     setGameState = (e) => {
         this.setState ({
             gameState: 'correct',
@@ -360,17 +190,14 @@ class FetchData extends React.Component {
         if (answer === "correct") {
         this.setState({
             score: this.state.score + 1,
-            })   
-        }
-        else {
-          //  
+            })
         }
     }
-    
+
     render() {
         let { isLoaded, randName, randPlayerClubs, randYears, randGames, gameState, won} = this.state;
-        
-        if (!isLoaded) {
+
+        if (!isLoaded && (gameState === "newGame")) {
             // this should all be a single component?
             return <>
                     <div className="loading-container">
@@ -378,17 +205,17 @@ class FetchData extends React.Component {
                         <div>
                             <p>How much time do you want?</p>
                             <div id="gameSpec-btn">
-                                <button onClick={this.setCountdownValue} value='3'>3 Min</button>
-                                <button onClick={this.setCountdownValue} value='5'>5 Min</button>
-                                <button onClick={this.setCountdownValue} value='10'>10 Min</button>
+                                <button className="countdownButton" id="3min" onClick={this.setCountdownValue} value='3'>3 Min</button>
+                                <button className="countdownButton" id="5min" onClick={this.setCountdownValue} value='5'>5 Min</button>
+                                <button className="countdownButton" id="10min" onClick={this.setCountdownValue} value='10'>10 Min</button>
                             </div>
                         </div>
                         <div>
                             <p>Difficult level?</p>
                             <div id="gameSpec-btn">
-                                <button onClick={this.setLivesValue} value='15'>Easy</button>
-                                <button onClick={this.setLivesValue} value='10'>Medium</button>
-                                <button onClick={this.setLivesValue} value='5'>Hard</button>
+                                <button className="difficultyButton" id="easy" onClick={this.setLivesValue} value='15'>Easy</button>
+                                <button className="difficultyButton" id="medium" onClick={this.setLivesValue} value='10'>Medium</button>
+                                <button className="difficultyButton" id="hard" onClick={this.setLivesValue} value='5'>Hard</button>
                             </div>
                         </div>
                     </div>
@@ -415,7 +242,7 @@ class FetchData extends React.Component {
                         <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore} remainingLives={this.state.lives} answers={this.state.incorrectAnswers}/>
                     </div>
                     <div className="play-container">
-                        <GiveUp sendFunction={this.setGameState} />
+                        <GiveUp skipPlayer={this.skipPlayer} />
                     </div>
                 </>
             )
@@ -467,14 +294,14 @@ class FetchData extends React.Component {
         else if (gameState === 'gameOver') {
             return (
                 <>
-                    <div>   
+                    <div>
                         <h3>Game Over</h3>
                     </div>
                     <div>
                         <Score score={this.state.score}/>
                     </div>
                     <div className='play-container'>
-                        <PlayAgain sendFunction={this.resetGame} />
+                        <PlayAgain restartGame={this.resetGame} />
                     </div>
                 </>
             )
