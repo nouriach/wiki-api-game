@@ -62,10 +62,18 @@ class FetchData extends React.Component {
 
     fetchPlayerData = () => {
         // CSS needs to occur here to show the user that they need to select a time and difficulty level
-        if (this.state.countdownMin === '' && this.state.lives !== '') alert('please select a time')
-        if (this.state.lives === '' && this.state.countdownMin !== '') alert('please select a difficulty')
-        if(this.state.countdownMin === '' && this.state.lives === '' ) alert('please select a time and difficulty')
-        else {
+        if (this.state.countdownMin === '' && this.state.lives !== '') {
+            alert('please select a time');
+            return 
+        } 
+        if (this.state.lives === '' && this.state.countdownMin !== '') {
+            alert('please select a difficulty')
+            return
+        } 
+        if(this.state.countdownMin === '' && this.state.lives === '' ) {
+            alert('please select a time and difficulty')
+            return
+        } else {
             fetch('https://v2-api.sheety.co/7f01a568513886dcd760b17376d01421/premierLeaguePlayers/sheet1')
             .then(response => response.json())
             .then(data => {
