@@ -61,13 +61,10 @@ class FetchData extends React.Component {
     }
 
     fetchPlayerData = () => {
-        if (this.state.countdownMin === '') {
-            // CSS needs to occur here to show the user that they need to select a time and difficult level
-            alert('please select a time')
-        }
-        if (this.state.lives === '') {
-          alert('please select a difficulty')
-        }
+        // CSS needs to occur here to show the user that they need to select a time and difficulty level
+        if (this.state.countdownMin === '' && this.state.lives !== '') alert('please select a time')
+        if (this.state.lives === '' && this.state.countdownMin !== '') alert('please select a difficulty')
+        if(this.state.countdownMin === '' && this.state.lives === '' ) alert('please select a time and difficulty')
         else {
             fetch('https://v2-api.sheety.co/7f01a568513886dcd760b17376d01421/premierLeaguePlayers/sheet1')
             .then(response => response.json())
@@ -170,11 +167,6 @@ class FetchData extends React.Component {
         })
         this.selectRandomPlayer();
       }
-
-
-    skipPlayer = () => {
-      this.selectRandomPlayer();
-    }
     setGameState = (e) => {
         this.setState ({
             gameState: 'correct',
@@ -242,7 +234,7 @@ class FetchData extends React.Component {
                         <PlayerName playerName={randName} gameState={this.state.gameState} setGameState={this.setGameState} updateScore={this.updateScore} remainingLives={this.state.lives} answers={this.state.incorrectAnswers}/>
                     </div>
                     <div className="play-container">
-                        <GiveUp skipPlayer={this.skipPlayer} />
+                        <GiveUp skipPlayer={this.setGameState} />
                     </div>
                 </>
             )
@@ -264,7 +256,7 @@ class FetchData extends React.Component {
                         <PlayerAnswer playerName={randName} />
                     </div>
                     <div className='play-container'>
-                        <PlayAgain sendFunction={this.nextPlayer} gameState={this.state.gameState} />
+                        <PlayAgain restartGame={this.nextPlayer} gameState={this.state.gameState} wording="Next Player" />
                     </div>
                 </>
             )
@@ -286,7 +278,7 @@ class FetchData extends React.Component {
                     <PlayerAnswer playerName={randName} />
                 </div>
                 <div className='play-container'>
-                    <PlayAgain sendFunction={this.nextPlayer} />
+                    <PlayAgain restartGame={this.nextPlayer} />
                 </div>
               </>
           )

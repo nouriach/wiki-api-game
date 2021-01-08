@@ -2,9 +2,10 @@ import React from 'react';
 
 class PlayAgain extends React.Component {
     render () {
+        let wording = (!this.props.wording) ? "Restart Game" : this.props.wording
         return (
             <>
-                <button className="button" onClick={this.props.restartGame}>Restart Game</button>
+                <button className="button" onClick={this.props.restartGame}>{wording}</button>
             </>
         );
     }
